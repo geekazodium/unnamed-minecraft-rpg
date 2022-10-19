@@ -1,0 +1,19 @@
+  name: Caverns-of-Amethyst
+  main: com.geekazodium.cavernsofamethyst.Main
+  api-version: 1.13
+  version: 1.0-SNAPSHOT
+  depend:
+    - LibsDisguises
+  commands:
+    getItem:
+      description: gives sender a custom item
+      permission: operator
+      permission-message: you do not have the permissions to use this command
+    debugHitbox:
+      description: shows hitboxes to players
+      permission: operator
+      permission-message: you do not have the permissions to use this command
+    generateDungeon:
+      description: command for testing dungeon generation
+      permission: operator
+      permission-message: you do not have the permissions to use this command
