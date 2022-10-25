@@ -21,7 +21,7 @@ import static com.geekazodium.cavernsofamethyst.Main.overworld;
 import static com.geekazodium.cavernsofamethyst.listeners.EntityInteractListener.playerInteractNpcCooldown;
 
 public class GameTickHandler implements Runnable {
-    public static HashMap<Player,Integer> playersAttackCooldown = new HashMap<>();
+    //public static HashMap<Player,Integer> playersAttackCooldown = new HashMap<>();
     public final WorldNPCHandler overworldNPCHandler;
     private final OverworldMobBehaviorManager overworldMobSpawningManager = new OverworldMobBehaviorManager();
     public final DamageAnimationTickHandler overworldDamageAnimationTickHandler = new DamageAnimationTickHandler(overworld);
@@ -35,6 +35,10 @@ public class GameTickHandler implements Runnable {
         instance = this;
     }
 
+    public static PlayerHandler getPlayerHandler(Player player){
+        return players.get(player);
+    }
+
     private static void accept(Player player, PlayerHandler playerHandler) {
         playerHandler.tick();
     }
@@ -42,9 +46,6 @@ public class GameTickHandler implements Runnable {
     @Override
     public void run() {
         players.forEach(GameTickHandler::accept);
-        for (Player player : playersAttackCooldown.keySet()) {
-            playersAttackCooldown.replace(player,playersAttackCooldown.get(player)-1);
-        }
         overworldMobSpawningManager.tick();
         overworldNPCHandler.tick();
         overworldDamageAnimationTickHandler.tick();

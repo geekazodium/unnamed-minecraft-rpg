@@ -1,25 +1,25 @@
 package com.geekazodium.cavernsofamethyst.util;
 
-import com.geekazodium.cavernsofamethyst.GameTickHandler;
+import com.geekazodium.cavernsofamethyst.Main;
 import com.geekazodium.cavernsofamethyst.items.CustomItemHandler;
 import com.geekazodium.cavernsofamethyst.items.CustomItemHandlerRegistry;
 import com.geekazodium.cavernsofamethyst.quests.CutsceneHandler;
+import com.geekazodium.cavernsofamethyst.quests.PlayerQuestDataUtil;
 import com.geekazodium.cavernsofamethyst.soundtracks.PlayerMusicHandler;
-import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.Objects;
-import java.util.logging.Logger;
 
 import static com.geekazodium.cavernsofamethyst.listeners.EntityInteractListener.playerInteractNpcCooldown;
 import static com.geekazodium.cavernsofamethyst.util.EntityDamageUtil.BASE_ATTACK_KEY;
@@ -27,6 +27,7 @@ import static com.geekazodium.cavernsofamethyst.util.EntityDamageUtil.EFFECTIVE_
 
 public class PlayerHandler {
     private final Player player;
+    private int attackCooldown = 0;
     private int level;
     private final PlayerMusicHandler playerMusicHandler;
     private int hasSneaked = 0;
@@ -34,6 +35,29 @@ public class PlayerHandler {
 
     public void onSneaked(){
         hasSneaked+=1;
+    }
+
+    public void initPlayer(){
+        player.setGameMode(GameMode.ADVENTURE);
+        player.getInventory().clear();
+        player.setLevel(0);
+        player.setExp(0);
+        respawnPlayer();
+        resetPlayerQuestMarkers();
+    }
+
+    private void resetPlayerQuestMarkers(){
+        PlayerQuestDataUtil.clearQuestData(player);
+    }
+
+    public void respawnPlayer(){
+        player.teleport(new Location(Main.overworld,-152,120,4, -90, 90));
+        player.addPotionEffect(new PotionEffect(
+                PotionEffectType.BLINDNESS,
+                40,
+                1,
+                false
+        ));
     }
     public boolean hasSneaked(){
         if(hasSneaked>0){
@@ -61,13 +85,15 @@ public class PlayerHandler {
 
     public void tick(){
         updateVolatileStats();
-        playerMusicHandler.tick();
+        attackCooldown -= 1;
+        attackCooldown = Math.max(0,attackCooldown);
+        //playerMusicHandler.tick();
         AttributeInstance atkSpeed = Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_ATTACK_SPEED));
-        atkSpeed.setBaseValue(Math.max(0,1-GameTickHandler.playersAttackCooldown.getOrDefault(player,0))*(80));
+        atkSpeed.setBaseValue(attackCooldown>0?0:80);
         atkSpeed.getModifiers().forEach(atkSpeed::removeModifier);
         Material material = player.getInventory().getItemInMainHand().getType();
         if(player.getCooldown(material)<=0) {
-            player.setCooldown(material,Math.max(0,GameTickHandler.playersAttackCooldown.getOrDefault(player,0)));
+            player.setCooldown(material,Math.max(0,attackCooldown));
         }
         while (hasSneaked()){
             if(cutscene != null){
@@ -96,6 +122,14 @@ public class PlayerHandler {
             this.cutscene = handler;
             this.cutscene.next();
         }
+    }
+
+    public void setAtkCooldown(int delay) {
+        attackCooldown = delay;
+    }
+
+    public int getAtkCooldown() {
+        return attackCooldown;
     }
 
     public static class PlayerStats{

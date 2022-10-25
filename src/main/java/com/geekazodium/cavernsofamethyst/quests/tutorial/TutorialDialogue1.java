@@ -2,7 +2,6 @@ package com.geekazodium.cavernsofamethyst.quests.tutorial;
 
 import com.geekazodium.cavernsofamethyst.quests.CutsceneHandler;
 import com.geekazodium.cavernsofamethyst.quests.PlayerQuestDataUtil;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 
@@ -12,7 +11,7 @@ import static com.geekazodium.cavernsofamethyst.quests.tutorial.TutorialNPC1.TUT
 
 public class TutorialDialogue1 extends CutsceneHandler {
 
-    public static NamespacedKey TUTORIAL_QUEST_KEY = PlayerQuestDataUtil.questNamespaceKey("tutorial1");
+    //public static NamespacedKey TUTORIAL_QUEST_KEY = PlayerQuestDataUtil.questNamespaceKey("tutorial1");
     public TutorialDialogue1(Player player) {
         super(player);
         this.dialogue = new Message[]{

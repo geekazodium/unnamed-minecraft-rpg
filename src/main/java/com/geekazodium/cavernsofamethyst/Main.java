@@ -2,6 +2,7 @@ package com.geekazodium.cavernsofamethyst;
 
 import com.geekazodium.cavernsofamethyst.commands.DebugHitboxCommand;
 import com.geekazodium.cavernsofamethyst.commands.GetItemCommand;
+import com.geekazodium.cavernsofamethyst.commands.ResetCharacterCommand;
 import com.geekazodium.cavernsofamethyst.items.Bows.WoodenBow;
 import com.geekazodium.cavernsofamethyst.items.Swords.WarmBlade;
 import com.geekazodium.cavernsofamethyst.items.Wands.Icicle;
@@ -71,6 +72,7 @@ public class Main extends JavaPlugin {
 
     private void registerCommandListeners(){
         minecraftServer.getPluginCommand("getItem").setExecutor(new GetItemCommand());
+        minecraftServer.getPluginCommand("resetCharacter").setExecutor(new ResetCharacterCommand());
         minecraftServer.getPluginCommand("debugHitbox").setExecutor(new DebugHitboxCommand());
         minecraftServer.getPluginCommand("generateDungeon").setExecutor(new DebugHitboxCommand());
     }

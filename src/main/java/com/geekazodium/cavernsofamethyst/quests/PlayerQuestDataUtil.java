@@ -33,10 +33,6 @@ public class PlayerQuestDataUtil {
         return playerPersistentData.getOrDefault(key, PersistentDataType.TAG_CONTAINER, blank.getItemMeta().getPersistentDataContainer());
     }
 
-    public static PersistentDataContainer getQuestData(Player player,String string){
-        throw new RuntimeException(new Exception());
-    }
-
     public static void updateQuestData(Player player,NamespacedKey key,PersistentDataContainer container){
         PersistentDataContainer playerPersistentData = player.getPersistentDataContainer();
         //NamespacedKey key = new NamespacedKey(Main.getInstance(), "quest_" + quest);
@@ -45,11 +41,6 @@ public class PlayerQuestDataUtil {
 
     public static int getQuestProgress(PersistentDataContainer container){
         return container.getOrDefault(questProgress,PersistentDataType.INTEGER,0);
-    }
-
-
-    public static PersistentDataContainer updateQuestData(Player player,String string,PersistentDataContainer container){
-        throw new RuntimeException(new Exception());
     }
 
 

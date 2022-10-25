@@ -17,3 +17,7 @@
       description: command for testing dungeon generation
       permission: operator
       permission-message: you do not have the permissions to use this command
+    resetCharacter:
+      description: reset your adventure (used for testing only)
+      permission: operator
+      permission-message: you do not have the permissions to use this command
