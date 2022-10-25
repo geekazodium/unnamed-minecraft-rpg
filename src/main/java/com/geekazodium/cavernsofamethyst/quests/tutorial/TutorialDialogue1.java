@@ -1,9 +1,18 @@
 package com.geekazodium.cavernsofamethyst.quests.tutorial;
 
 import com.geekazodium.cavernsofamethyst.quests.CutsceneHandler;
+import com.geekazodium.cavernsofamethyst.quests.PlayerQuestDataUtil;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataContainer;
+
+import static com.geekazodium.cavernsofamethyst.quests.tutorial.TutorialNPC1.TUTORIAL_QUEST_KEY;
+
+//import static com.geekazodium.cavernsofamethyst.quests.tutorial.TutorialNPC1.TUTORIAL_1;
 
 public class TutorialDialogue1 extends CutsceneHandler {
+
+    public static NamespacedKey TUTORIAL_QUEST_KEY = PlayerQuestDataUtil.questNamespaceKey("tutorial1");
     public TutorialDialogue1(Player player) {
         super(player);
         this.dialogue = new Message[]{
@@ -14,6 +23,9 @@ public class TutorialDialogue1 extends CutsceneHandler {
 
     @Override
     public void performFinishedAction() {
+        PersistentDataContainer container = PlayerQuestDataUtil.getQuestData(player, TUTORIAL_QUEST_KEY);
+        PlayerQuestDataUtil.setQuestProgress(container,1);
+        PlayerQuestDataUtil.updateQuestData(player, TUTORIAL_QUEST_KEY,container);
         player.sendMessage("finished");
         player.giveExp(1000);
     }

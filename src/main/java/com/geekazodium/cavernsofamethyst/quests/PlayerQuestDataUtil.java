@@ -14,22 +14,32 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.naming.Name;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PlayerQuestDataUtil {
     //public static final NamespacedKey playerQuests = new NamespacedKey(Main.getInstance(),"quest");
     public static final NamespacedKey questProgress = new NamespacedKey(Main.getInstance(),"progress");
     public static final NamespacedKey questExtra = new NamespacedKey(Main.getInstance(),"extra");
+    //private static final Map<String,NamespacedKey> questKeys = new HashMap<>();
 
-    public static PersistentDataContainer getQuestData(Player player,String quest){
+    public static NamespacedKey questNamespaceKey(String string){
+        return new NamespacedKey(Main.getInstance(), "quest_" + string);
+    }
+
+    public static PersistentDataContainer getQuestData(Player player,NamespacedKey key){
         ItemStack blank = new ItemStack(Material.ARROW);
         PersistentDataContainer playerPersistentData = player.getPersistentDataContainer();
-        NamespacedKey key = new NamespacedKey(Main.getInstance(), "quest_" + quest);
         return playerPersistentData.getOrDefault(key, PersistentDataType.TAG_CONTAINER, blank.getItemMeta().getPersistentDataContainer());
     }
 
-    public static void updateQuestData(Player player,String quest,PersistentDataContainer container){
+    public static PersistentDataContainer getQuestData(Player player,String string){
+        throw new RuntimeException(new Exception());
+    }
+
+    public static void updateQuestData(Player player,NamespacedKey key,PersistentDataContainer container){
         PersistentDataContainer playerPersistentData = player.getPersistentDataContainer();
-        NamespacedKey key = new NamespacedKey(Main.getInstance(), "quest_" + quest);
+        //NamespacedKey key = new NamespacedKey(Main.getInstance(), "quest_" + quest);
         playerPersistentData.set(key,PersistentDataType.TAG_CONTAINER,container);
     }
 
@@ -37,16 +47,25 @@ public class PlayerQuestDataUtil {
         return container.getOrDefault(questProgress,PersistentDataType.INTEGER,0);
     }
 
+
+    public static PersistentDataContainer updateQuestData(Player player,String string,PersistentDataContainer container){
+        throw new RuntimeException(new Exception());
+    }
+
+
     public static void setQuestProgress(PersistentDataContainer container, int i) {
         container.set(questProgress,PersistentDataType.INTEGER,i);
     }
 
-    /*public static void updatePlayerQuestsMappings(Player player){
-        PersistentDataContainer persistentDataContainer = player.getPersistentDataContainer();
-        PersistentDataContainer[] quests = persistentDataContainer.get(playerQuests, PersistentDataType.TAG_CONTAINER_ARRAY);
-        if(quests == null){
-
-        }
-        int[] questReferences = new int[quests.length];
-    }*/
+    public static void clearQuestData(Player player) {
+        PersistentDataContainer dataContainer = player.getPersistentDataContainer();
+        dataContainer.getKeys().forEach(namespacedKey -> {
+            if(!namespacedKey.getNamespace().equals(questProgress.getNamespace())){
+                return;
+            }
+            if(namespacedKey.getKey().startsWith("quest_")){
+                dataContainer.remove(namespacedKey);
+            }
+        });
+    }
 }

@@ -7,6 +7,8 @@ import com.geekazodium.cavernsofamethyst.npc.WorldNPCHandler;
 import com.geekazodium.cavernsofamethyst.quests.CutsceneHandler;
 import com.geekazodium.cavernsofamethyst.quests.PlayerQuestDataUtil;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 
@@ -14,7 +16,7 @@ import static com.geekazodium.cavernsofamethyst.Main.overworld;
 
 public class TutorialNPC1 extends QuestNPC {
 
-    public static final String TUTORIAL_1 = "tutorial1";
+    public static NamespacedKey TUTORIAL_QUEST_KEY = PlayerQuestDataUtil.questNamespaceKey("tutorial1");
 
     public TutorialNPC1(WorldNPCHandler handler) {
         super("geekazodium", new Location(overworld,-97.5,63,46.5),handler);
@@ -22,12 +24,16 @@ public class TutorialNPC1 extends QuestNPC {
 
     @Override
     public void interact(PlayerInteractEntityEvent event) {
-        GameTickHandler.players.get(event.getPlayer()).setCutscene(new TutorialDialogue1(event.getPlayer()));
-        PersistentDataContainer container = PlayerQuestDataUtil.getQuestData(event.getPlayer(), TUTORIAL_1);
-        if(PlayerQuestDataUtil.getQuestProgress(container) == 0){
-            PlayerQuestDataUtil.setQuestProgress(container,1);
+        Player player = event.getPlayer();
+        PersistentDataContainer container = PlayerQuestDataUtil.getQuestData(player, TUTORIAL_QUEST_KEY);
+        player.sendMessage(
+                String.valueOf(PlayerQuestDataUtil.getQuestProgress(container))
+        );
+        if(PlayerQuestDataUtil.getQuestProgress(container) == 1){
+            return;
         }
-        PlayerQuestDataUtil.updateQuestData(event.getPlayer(),TUTORIAL_1,container);
+        GameTickHandler.players.get(player).setCutscene(new TutorialDialogue1(player));
+        PlayerQuestDataUtil.updateQuestData(player,TUTORIAL_QUEST_KEY,container);
     }
 
     @Override
