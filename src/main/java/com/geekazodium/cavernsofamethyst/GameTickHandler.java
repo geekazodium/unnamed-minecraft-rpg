@@ -1,24 +1,23 @@
 package com.geekazodium.cavernsofamethyst;
 
+import com.geekazodium.cavernsofamethyst.entities.treasure.LootChestHandler;
+import com.geekazodium.cavernsofamethyst.entities.treasure.TreasureEntity;
+import com.geekazodium.cavernsofamethyst.entities.treasure.TreasureEntityRegistry;
 import com.geekazodium.cavernsofamethyst.holograms.DamageAnimationTickHandler;
 import com.geekazodium.cavernsofamethyst.items.CustomProjectileHandler.ProjectileHandler;
-import com.geekazodium.cavernsofamethyst.mobs.OverworldMobBehaviorManager;
-import com.geekazodium.cavernsofamethyst.npc.overworld.OverworldNPCHandler;
-import com.geekazodium.cavernsofamethyst.npc.WorldNPCHandler;
+import com.geekazodium.cavernsofamethyst.entities.mobs.OverworldMobBehaviorManager;
+import com.geekazodium.cavernsofamethyst.entities.npc.overworld.OverworldNPCHandler;
+import com.geekazodium.cavernsofamethyst.entities.npc.WorldNPCHandler;
 import com.geekazodium.cavernsofamethyst.util.PlayerHandler;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 
-import java.nio.Buffer;
 import java.util.HashMap;
 
 import static com.geekazodium.cavernsofamethyst.Main.minecraftServer;
 import static com.geekazodium.cavernsofamethyst.Main.overworld;
-import static com.geekazodium.cavernsofamethyst.listeners.EntityInteractListener.playerInteractNpcCooldown;
 
 public class GameTickHandler implements Runnable {
     //public static HashMap<Player,Integer> playersAttackCooldown = new HashMap<>();
@@ -50,6 +49,7 @@ public class GameTickHandler implements Runnable {
         overworldNPCHandler.tick();
         overworldDamageAnimationTickHandler.tick();
         overworldProjectileHandler.tick();
+        TreasureEntityRegistry.tickHandlers();
         if(stop){
             return;
         }

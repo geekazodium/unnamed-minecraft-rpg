@@ -19,7 +19,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.projectiles.ProjectileSource;
 
-import static com.geekazodium.cavernsofamethyst.npc.PlayerNPC.isNPCKey;
+import static com.geekazodium.cavernsofamethyst.entities.npc.PlayerNPC.isNPCKey;
 
 public class AttackListener implements Listener {
     @EventHandler

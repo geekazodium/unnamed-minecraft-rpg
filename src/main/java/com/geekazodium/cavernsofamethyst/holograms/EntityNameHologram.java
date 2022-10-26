@@ -1,10 +1,9 @@
 package com.geekazodium.cavernsofamethyst.holograms;
 
-import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.persistence.PersistentDataType;
 
-import static com.geekazodium.cavernsofamethyst.mobs.MobBehavior.MOB_DISPLAY_NAME_KEY;
+import static com.geekazodium.cavernsofamethyst.entities.mobs.MobBehavior.MOB_DISPLAY_NAME_KEY;
 import static com.geekazodium.cavernsofamethyst.util.EntityDisplayUtil.formatName;
 
 public class EntityNameHologram extends HologramHandler{

@@ -14,7 +14,6 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.Arrays;
 import java.util.Random;
 
 import static com.geekazodium.cavernsofamethyst.util.ElementalReactionUtil.*;
@@ -110,29 +109,30 @@ public class EntityDamageUtil {
         fire += fire * effectiveAttack/100;
         earth += earth * effectiveAttack/100;
         water += water * effectiveAttack/100;
-        if(damager instanceof Player player) {
+        /*if(damager instanceof Player player) { code to debug player stats
             debugCharacterStats(player, new String[]{
                     String.valueOf(fire),
                     String.valueOf(earth),
                     String.valueOf(water),
                     String.valueOf(baseAttack),
                     String.valueOf(maxMana),
-                    String.valueOf(maxHealth),
+                    String.valueOf(maxHealth)
             });
-        }
+        }*/
         TickingHologram damageHologram = (TickingHologram) Hologram.spawnForDamageEvent(damager, entity,fire,earth,water,element);
         GameTickHandler.getInstance().overworldDamageAnimationTickHandler.display(damageHologram);
         applyElement(entity, element, elementCap,50*(critical?2:1));
         entity.setNoDamageTicks(0);
         entity.damage(fire+earth+water);
-    }//Edited
+    }
+
     private static void debugCharacterStats(Player player,String[] data){
         StringBuilder stringBuilder = new StringBuilder();
         for (String s : data) {
             stringBuilder.append(s);
             stringBuilder.append(",");
         }
-        player.sendMessage(stringBuilder.toString());
+        player.sendMessage(stringBuilder.substring(0,stringBuilder.length()-2));
     }
 
     private static int getElementalPower(int damage) {
@@ -152,10 +152,9 @@ public class EntityDamageUtil {
         );
     }
 
-    public static boolean onEntityDamagePlayer(Entity damager,Player player) {
+    public static void onEntityDamagePlayer(Entity damager, Player player) {
         Random random = new Random();
         EntityDamagePlayer(damager, player,random,damager.getPersistentDataContainer());
-        return true;
     }
 
     private static void EntityDamagePlayer(Entity damager, Player player, Random random, PersistentDataContainer persistentDataContainer) {

@@ -1,8 +1,8 @@
 package com.geekazodium.cavernsofamethyst.quests.tutorial;
 
 import com.geekazodium.cavernsofamethyst.GameTickHandler;
-import com.geekazodium.cavernsofamethyst.npc.QuestNPC;
-import com.geekazodium.cavernsofamethyst.npc.WorldNPCHandler;
+import com.geekazodium.cavernsofamethyst.entities.npc.QuestNPC;
+import com.geekazodium.cavernsofamethyst.entities.npc.WorldNPCHandler;
 import com.geekazodium.cavernsofamethyst.quests.PlayerQuestDataUtil;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;

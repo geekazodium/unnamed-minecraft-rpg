@@ -18,7 +18,7 @@ public class EntityDeathListener implements Listener {
     @EventHandler
     public void onEvent(PlayerRespawnEvent event){
         Player player = event.getPlayer();
-        player.sendMessage("respawned");
+        //player.sendMessage("respawned");
         Main.minecraftServer.getScheduler().scheduleSyncDelayedTask(
                 Main.getInstance(),
                 () -> GameTickHandler.getPlayerHandler(player).respawnPlayer(),

@@ -43,7 +43,6 @@ public class PlayerQuestDataUtil {
         return container.getOrDefault(questProgress,PersistentDataType.INTEGER,0);
     }
 
-
     public static void setQuestProgress(PersistentDataContainer container, int i) {
         container.set(questProgress,PersistentDataType.INTEGER,i);
     }

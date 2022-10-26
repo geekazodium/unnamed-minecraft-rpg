@@ -1,25 +1,16 @@
 package com.geekazodium.cavernsofamethyst.holograms;
 
-import com.geekazodium.cavernsofamethyst.Main;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
-
-import static com.geekazodium.cavernsofamethyst.Main.overworld;
-import static com.geekazodium.cavernsofamethyst.mobs.MobBehavior.MOB_DISPLAY_NAME_KEY;
-import static com.geekazodium.cavernsofamethyst.util.EntityDisplayUtil.formatName;
 
 public class DamageHologram extends HologramHandler implements TickingHologram{
     public static final Vector GRAVITY = new Vector(0, 0.1, 0);

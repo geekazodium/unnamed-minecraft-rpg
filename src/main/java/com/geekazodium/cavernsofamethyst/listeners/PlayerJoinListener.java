@@ -27,7 +27,7 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onEvent(PlayerJoinEvent event){
         Player player = event.getPlayer();
-        player.sendMessage(String.valueOf(player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).getBaseValue()));
+        //player.sendMessage(String.valueOf(player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).getBaseValue()));
         PlayerHandler handler = new PlayerHandler(player);
         GameTickHandler.players.put(player, handler);
         updatePlayerItems(player);
