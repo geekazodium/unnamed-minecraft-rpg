@@ -1,13 +1,11 @@
 package com.geekazodium.cavernsofamethyst.items;
 
-import com.geekazodium.cavernsofamethyst.GameTickHandler;
 import com.geekazodium.cavernsofamethyst.util.EntityDamageUtil;
 import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import static com.geekazodium.cavernsofamethyst.GameTickHandler.getPlayerHandler;
-import static com.geekazodium.cavernsofamethyst.GameTickHandler.players;
 
 //import static com.geekazodium.cavernsofamethyst.GameTickHandler.playersAttackCooldown;
 

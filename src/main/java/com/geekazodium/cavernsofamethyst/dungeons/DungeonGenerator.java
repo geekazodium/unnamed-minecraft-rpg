@@ -4,9 +4,11 @@ import com.geekazodium.cavernsofamethyst.util.Grid2;
 import com.geekazodium.cavernsofamethyst.util.Grid2.Coordinate2i;
 import it.unimi.dsi.fastutil.Pair;
 import org.bukkit.Location;
-import org.bukkit.structure.Structure;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 
 import static com.geekazodium.cavernsofamethyst.dungeons.DungeonGenerator.State.*;
 

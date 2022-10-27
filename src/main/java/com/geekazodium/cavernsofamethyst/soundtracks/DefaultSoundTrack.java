@@ -1,12 +1,8 @@
 package com.geekazodium.cavernsofamethyst.soundtracks;
 
 import org.bukkit.Instrument;
-import org.bukkit.Note;
-import org.bukkit.Sound;
 
 import java.util.List;
-
-import static com.geekazodium.cavernsofamethyst.soundtracks.Pitch.*;
 
 public class DefaultSoundTrack extends AbstractSoundTrack{
     public DefaultSoundTrack(){

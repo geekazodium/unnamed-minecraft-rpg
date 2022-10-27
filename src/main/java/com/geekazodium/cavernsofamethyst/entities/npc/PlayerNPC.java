@@ -8,7 +8,9 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Husk;
+import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Random;

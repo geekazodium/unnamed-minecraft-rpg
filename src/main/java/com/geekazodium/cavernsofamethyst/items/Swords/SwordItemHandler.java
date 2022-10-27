@@ -1,10 +1,10 @@
 package com.geekazodium.cavernsofamethyst.items.Swords;
 
-import com.geekazodium.cavernsofamethyst.items.WeaponItemHandler;
-import com.geekazodium.cavernsofamethyst.util.VecUtil;
 import com.geekazodium.cavernsofamethyst.hitbox.Hitbox;
 import com.geekazodium.cavernsofamethyst.hitbox.HitboxCollisionUtil;
+import com.geekazodium.cavernsofamethyst.items.WeaponItemHandler;
 import com.geekazodium.cavernsofamethyst.util.Quaternion;
+import com.geekazodium.cavernsofamethyst.util.VecUtil;
 import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import org.bukkit.Location;
 import org.bukkit.Particle;

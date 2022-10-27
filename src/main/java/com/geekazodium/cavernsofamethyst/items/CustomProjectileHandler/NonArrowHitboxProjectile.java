@@ -9,7 +9,9 @@ import org.bukkit.entity.*;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public class NonArrowHitboxProjectile implements Projectile{
     protected LinkedList<Hitbox> hitboxes = new LinkedList<>();

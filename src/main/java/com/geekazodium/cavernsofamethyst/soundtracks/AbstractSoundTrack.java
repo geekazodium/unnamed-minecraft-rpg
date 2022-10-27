@@ -1,15 +1,11 @@
 package com.geekazodium.cavernsofamethyst.soundtracks;
 
 import org.bukkit.Instrument;
-import org.bukkit.Note;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.bukkit.Note.Tone.C;
 
 public abstract class AbstractSoundTrack implements SoundTrack{
     protected Map<Integer, Collection<Note>> notes = new HashMap<>();

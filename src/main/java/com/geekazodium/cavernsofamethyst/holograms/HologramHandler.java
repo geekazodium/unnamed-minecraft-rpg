@@ -4,7 +4,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public abstract class HologramHandler implements Hologram{
     private boolean removed = false;

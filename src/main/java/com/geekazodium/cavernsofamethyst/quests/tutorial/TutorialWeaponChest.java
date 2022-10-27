@@ -2,22 +2,16 @@ package com.geekazodium.cavernsofamethyst.quests.tutorial;
 
 import com.geekazodium.cavernsofamethyst.Main;
 import com.geekazodium.cavernsofamethyst.entities.treasure.LootChestHandler;
-import com.geekazodium.cavernsofamethyst.items.Bows.WoodenBow;
 import com.geekazodium.cavernsofamethyst.items.CustomItemHandlerRegistry;
-import com.geekazodium.cavernsofamethyst.items.Wands.Icicle;
 import com.geekazodium.cavernsofamethyst.util.RandomUtil;
 import net.kyori.adventure.text.Component;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ChestMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
-import java.util.random.RandomGenerator;
 
 public class TutorialWeaponChest extends LootChestHandler {
     public TutorialWeaponChest(){

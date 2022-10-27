@@ -1,13 +1,9 @@
 package com.geekazodium.cavernsofamethyst.items.Wands;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
-
-import static com.geekazodium.cavernsofamethyst.util.ElementalReactionUtil.WATER_BASE_DAMAGE;
 
 public class Icicle extends WandItemHandler{
     public Icicle(){

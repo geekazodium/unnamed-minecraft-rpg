@@ -1,13 +1,11 @@
 package com.geekazodium.cavernsofamethyst;
 
-import com.geekazodium.cavernsofamethyst.entities.treasure.LootChestHandler;
-import com.geekazodium.cavernsofamethyst.entities.treasure.TreasureEntity;
+import com.geekazodium.cavernsofamethyst.entities.mobs.OverworldMobBehaviorManager;
+import com.geekazodium.cavernsofamethyst.entities.npc.WorldNPCHandler;
+import com.geekazodium.cavernsofamethyst.entities.npc.overworld.OverworldNPCHandler;
 import com.geekazodium.cavernsofamethyst.entities.treasure.TreasureEntityRegistry;
 import com.geekazodium.cavernsofamethyst.holograms.DamageAnimationTickHandler;
 import com.geekazodium.cavernsofamethyst.items.CustomProjectileHandler.ProjectileHandler;
-import com.geekazodium.cavernsofamethyst.entities.mobs.OverworldMobBehaviorManager;
-import com.geekazodium.cavernsofamethyst.entities.npc.overworld.OverworldNPCHandler;
-import com.geekazodium.cavernsofamethyst.entities.npc.WorldNPCHandler;
 import com.geekazodium.cavernsofamethyst.util.PlayerHandler;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;

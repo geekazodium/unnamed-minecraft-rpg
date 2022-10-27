@@ -1,13 +1,9 @@
 package com.geekazodium.cavernsofamethyst.items.Swords;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
-
-import static com.geekazodium.cavernsofamethyst.util.ElementalReactionUtil.*;
 
 public class WarmBlade extends SwordItemHandler {
     public WarmBlade() {

@@ -1,7 +1,6 @@
 package com.geekazodium.cavernsofamethyst.util;
 
 import org.bukkit.inventory.Inventory;
-import org.bukkit.loot.Lootable;
 
 import java.util.List;
 import java.util.Random;

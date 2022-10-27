@@ -1,6 +1,5 @@
 package com.geekazodium.cavernsofamethyst.soundtracks;
 
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 public class PlayerMusicHandler {

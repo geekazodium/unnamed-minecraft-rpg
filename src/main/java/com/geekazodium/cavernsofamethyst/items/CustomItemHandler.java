@@ -10,7 +10,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import static com.geekazodium.cavernsofamethyst.items.CustomItemHandlerRegistry.*;
+import static com.geekazodium.cavernsofamethyst.items.CustomItemHandlerRegistry.HANDLER_ID;
+import static com.geekazodium.cavernsofamethyst.items.CustomItemHandlerRegistry.HANDLER_VERSION;
 
 public abstract class CustomItemHandler {
     protected final int newestVer;

@@ -2,7 +2,6 @@ package com.geekazodium.cavernsofamethyst.entities.treasure;
 
 import com.geekazodium.cavernsofamethyst.Main;
 import com.geekazodium.cavernsofamethyst.quests.tutorial.TutorialWeaponChest;
-import org.bukkit.Location;
 import org.bukkit.World;
 
 import java.util.ArrayList;

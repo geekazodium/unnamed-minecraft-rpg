@@ -2,25 +2,13 @@ package com.geekazodium.cavernsofamethyst.commands;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.profile.PlayerTextures;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.http.HttpClient;
-import java.util.Collection;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static com.geekazodium.cavernsofamethyst.Main.LOGGER;
 

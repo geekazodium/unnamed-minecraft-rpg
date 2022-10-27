@@ -1,7 +1,6 @@
 package com.geekazodium.cavernsofamethyst.entities.treasure;
 
 import org.bukkit.Effect;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.data.BlockData;

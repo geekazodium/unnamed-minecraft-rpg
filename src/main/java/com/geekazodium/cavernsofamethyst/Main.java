@@ -7,7 +7,10 @@ import com.geekazodium.cavernsofamethyst.items.Bows.WoodenBow;
 import com.geekazodium.cavernsofamethyst.items.Swords.WarmBlade;
 import com.geekazodium.cavernsofamethyst.items.Wands.Icicle;
 import com.geekazodium.cavernsofamethyst.listeners.*;
-import org.bukkit.*;
+import org.bukkit.GameRule;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Server;
+import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Level;
