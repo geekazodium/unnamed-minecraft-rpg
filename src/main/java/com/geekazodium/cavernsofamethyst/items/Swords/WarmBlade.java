@@ -14,7 +14,6 @@ public class WarmBlade extends SwordItemHandler {
     protected ItemStack item() {
         ItemStack itemStack = new ItemStack(Material.STONE_SWORD);
         ItemMeta itemMeta = itemStack.getItemMeta();
-        PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
         itemStack.setItemMeta(itemMeta);
         return itemStack;
     }

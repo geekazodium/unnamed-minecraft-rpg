@@ -74,6 +74,8 @@ public abstract class SwordItemHandler extends WeaponItemHandler {
         if(!player.consumeMana(1)){
             return;
         }
+        player.getPlayer().getWorld().playSound(player.getPlayer().getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP,1,2);
+        player.getPlayer().getWorld().playSound(player.getPlayer().getLocation(), Sound.ENTITY_ARROW_SHOOT,1,1);
         Player p = player.getPlayer();
         p.setVelocity(p.getEyeLocation().getDirection().multiply(1.5).add(new Vector(0,0.5,0)));
         p.setInvulnerable(true);

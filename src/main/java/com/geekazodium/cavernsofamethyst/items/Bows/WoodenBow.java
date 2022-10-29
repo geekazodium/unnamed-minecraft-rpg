@@ -16,7 +16,6 @@ public class WoodenBow extends BowItemHandler {
     protected ItemStack item() {
         ItemStack itemStack = new ItemStack(Material.BOW);
         ItemMeta itemMeta = itemStack.getItemMeta();
-        PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
         itemStack.setItemMeta(itemMeta);
         return itemStack;
     }

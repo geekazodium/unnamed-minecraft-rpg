@@ -9,6 +9,7 @@ import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
 import me.libraryaddict.disguise.disguisetypes.MobDisguise;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -32,5 +33,6 @@ public class EnergyOrb extends NonArrowHitboxProjectile {
         location.getNearbyPlayers(30).forEach(p ->{
             p.spawnParticle(Particle.EXPLOSION_HUGE,location,3);
         });
+        location.getWorld().playSound(location, Sound.ENTITY_GENERIC_EXPLODE,2,1);
     }
 }

@@ -73,6 +73,8 @@ public abstract class WandItemHandler extends WeaponItemHandler {
             return;
         }
         Player p = player.getPlayer();
+        p.getLocation().getWorld().playSound(p.getLocation(),Sound.BLOCK_DISPENSER_LAUNCH,1,1);
+        p.getLocation().getWorld().playSound(p.getLocation(),Sound.ENTITY_FIREWORK_ROCKET_LAUNCH,1,0);
         GameTickHandler.getInstance().overworldProjectileHandler.addTickingProjectile(new EnergyOrb(
                 p,
                 p.getEyeLocation(),

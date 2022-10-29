@@ -14,7 +14,6 @@ public class Icicle extends WandItemHandler{
     protected ItemStack item() {
         ItemStack itemStack = new ItemStack(Material.STONE_SHOVEL);
         ItemMeta itemMeta = itemStack.getItemMeta();
-        PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
         itemStack.setItemMeta(itemMeta);
         return itemStack;
     }

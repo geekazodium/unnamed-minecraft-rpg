@@ -65,6 +65,7 @@ public abstract class BowItemHandler extends WeaponItemHandler {
             arrow.setPersistent(false);
             arrow.setShooter(p);
             copyPlayerWeaponDataToProjectile(container, arrow,handler);
+            p.getWorld().playSound(p.getLocation(),Sound.ENTITY_ARROW_SHOOT, 2,1.5f);
             rep -= 1;
             if(rep>0){
                 player.scheduleAction(this,2);

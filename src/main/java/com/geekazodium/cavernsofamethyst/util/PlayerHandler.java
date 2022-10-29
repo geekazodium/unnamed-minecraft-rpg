@@ -13,6 +13,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.FireworkMeta;
@@ -30,7 +31,7 @@ import static com.geekazodium.cavernsofamethyst.util.EntityDamageUtil.EFFECTIVE_
 public class PlayerHandler {
     public static final NamespacedKey VISUAL_ONLY_KEY = new NamespacedKey(Main.getInstance(),"visual_only");
     private final Random random = new Random();
-    private FallDamageCheckTask fallDamageCanceled;
+    private final FallDamageCheckTask playerFallCheckTask;
     private final Player player;
     private int attackCooldown = 0;
     private int elementalCharge = 0;
@@ -78,8 +79,8 @@ public class PlayerHandler {
 
     public PlayerHandler(Player player){
         this.player = player;
-        this.fallDamageCanceled = new FallDamageCheckTask(player,this);
-        scheduleAction(fallDamageCanceled,1);
+        this.playerFallCheckTask = new FallDamageCheckTask(player,this);
+        scheduleAction(playerFallCheckTask,1);
         this.playerMusicHandler= new PlayerMusicHandler(player);
     }
 
@@ -143,10 +144,14 @@ public class PlayerHandler {
         });
     }
 
+   /* public void onFallDamage(EntityDamageEvent event) {
+        playerFallCheckTask.onFall(event);
+    }*/
+
     private static class FallDamageCheckTask implements Runnable{
         private final Player player;
         private final PlayerHandler handler;
-        float lastFallDistance = 0;
+        //float lastFallDistance = 0;
         boolean cancel = false;
         public FallDamageCheckTask(Player player,PlayerHandler handler){
             this.player = player;
@@ -154,20 +159,26 @@ public class PlayerHandler {
         }
         @Override
         public void run() {
-            if(player.getFallDistance()<lastFallDistance){
-                cancel = false;
-            }else{
-                if(cancel) {
-                    player.setFallDistance(lastFallDistance<1?1:lastFallDistance);
+            if(cancel) {
+                if(!player.getLocation().subtract(0,1,0).getBlock().isCollidable()){
+                        //!player.getLocation().subtract(0,2,0).getBlock().isCollidable()){
+                    player.setFallDistance(0);
+                }else{
+                    cancel = false;
                 }
             }
-            lastFallDistance = player.getFallDistance();
+            //lastFallDistance = player.getFallDistance();
             handler.scheduleAction(this,1);
         }
 
         public void cancelFallDamage() {
             cancel = true;
         }
+
+        /*public void onFall(EntityDamageEvent event) {
+            event.setCancelled(cancel);
+            cancel = false;
+        }*/
     }
 
     private void updatePlayerActionBar() {
@@ -273,7 +284,7 @@ public class PlayerHandler {
     }
 
     public void cancelNextFallDamage() {
-        fallDamageCanceled.cancelFallDamage();
+        playerFallCheckTask.cancelFallDamage();
     }
 
     public static class PlayerStats{
