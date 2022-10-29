@@ -1,16 +1,14 @@
 package com.geekazodium.cavernsofamethyst.entities.mobs;
 
-import com.destroystokyo.paper.entity.ai.PaperVanillaGoal;
+import com.geekazodium.cavernsofamethyst.entities.mobs.pathfinder.IdleLimitedMobGoal;
+import com.geekazodium.cavernsofamethyst.entities.mobs.pathfinder.TargetLimitedMobGoal;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import me.libraryaddict.disguise.disguisetypes.MobDisguise;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Mob;
+import org.bukkit.entity.*;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
@@ -29,15 +27,16 @@ public class ZombieSpawnMobBehavior extends MobBehavior{
         DisguiseAPI.disguiseEntity(entity, new MobDisguise(DisguiseType.ZOMBIE));
         setMobDisplayNameKey(entity,"zombie");
         entity.setCustomNameVisible(true);
-        //Bukkit.getLogger().warning(Arrays.toString(Bukkit.getMobGoals().getAllGoals((Mob) entity).toArray()));
-        Bukkit.getMobGoals().removeGoal((Creature) entity, PaperVanillaGoal.WATER_AVOIDING_RANDOM_STROLL);
-        Bukkit.getMobGoals().removeGoal((Creature) entity, PaperVanillaGoal.RANDOM_STROLL);
-        Bukkit.getMobGoals().addGoal((Mob) entity,10,new AreaLimitMobGoal((Mob) entity,location,4));
+        Bukkit.getMobGoals().removeAllGoals((Mob) entity);
+        Bukkit.getMobGoals().addGoal((Mob) entity,1,
+                new IdleLimitedMobGoal((Mob) entity,location,4));
+        Bukkit.getMobGoals().addGoal((Mob) entity,0,
+                new TargetLimitedMobGoal((Mob) entity,location,10));
         PersistentDataContainer persistentDataContainer = entity.getPersistentDataContainer();
         persistentDataContainer.set(WATER_BASE_DAMAGE, PersistentDataType.INTEGER,2);
         persistentDataContainer.set(FIRE_BASE_DAMAGE, PersistentDataType.INTEGER,2);
         persistentDataContainer.set(EARTH_BASE_DAMAGE, PersistentDataType.INTEGER,2);
         persistentDataContainer.set(ENTITY_XP_KEY,PersistentDataType.INTEGER,2);
         return entity;
-    }
+    }//TODO add neutral damage
 }

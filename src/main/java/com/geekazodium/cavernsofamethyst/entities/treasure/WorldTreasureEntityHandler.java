@@ -69,6 +69,9 @@ public class WorldTreasureEntityHandler implements Listener {
         }else {
             return;
         }
+        if(!treasureEntity.canInteract(event.getPlayer())){
+            return;
+        }
         treasureEntity.interact(event.getPlayer());
     }
     @EventHandler

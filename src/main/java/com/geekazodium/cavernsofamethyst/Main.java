@@ -71,6 +71,7 @@ public class Main extends JavaPlugin {
         minecraftServer.getPluginManager().registerEvents(new ChunkLoadingListener(),this);
         minecraftServer.getPluginManager().registerEvents(new EntityInteractListener(),this);
         minecraftServer.getPluginManager().registerEvents(new PlayerShiftListener(),this);
+        minecraftServer.getPluginManager().registerEvents(new PlayerLevelUpListener(),this);
     }
 
     private void registerCommandListeners(){

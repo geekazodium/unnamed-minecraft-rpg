@@ -18,7 +18,6 @@ import static com.geekazodium.cavernsofamethyst.Main.minecraftServer;
 import static com.geekazodium.cavernsofamethyst.Main.overworld;
 
 public class GameTickHandler implements Runnable {
-    //public static HashMap<Player,Integer> playersAttackCooldown = new HashMap<>();
     public final WorldNPCHandler overworldNPCHandler;
     private final OverworldMobBehaviorManager overworldMobSpawningManager = new OverworldMobBehaviorManager();
     public final DamageAnimationTickHandler overworldDamageAnimationTickHandler = new DamageAnimationTickHandler(overworld);

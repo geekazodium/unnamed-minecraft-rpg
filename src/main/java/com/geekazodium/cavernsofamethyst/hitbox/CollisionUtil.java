@@ -63,9 +63,6 @@ public class CollisionUtil {
     public static class OOB {
         public Vector Pos, AxisX, AxisY, AxisZ, Half_size;
 
-        public OOB() {
-        }
-
         public OOB(Hitbox hitbox, Quaternion rotation) {
             updatePos(hitbox);
             updateRotationMatrix(rotation);

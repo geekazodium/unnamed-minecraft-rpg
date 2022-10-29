@@ -27,15 +27,12 @@ public abstract class LootChestHandler implements TreasureEntity{
             }
         }else{
             location().getWorld().getNearbyPlayers(location(),10)
-                    .forEach(p -> p.spawnParticle(Particle.FIREWORKS_SPARK,location().toCenterLocation(),1,0,0,0,2));
+                    .forEach(p -> p.spawnParticle(Particle.FIREWORKS_SPARK,location().toCenterLocation(),1,0.5,0.5,0.5,0.2));
         }
     }
 
     @Override
     public void interact(Player player) {
-        if(!isPlaced){
-            return;
-        }
         isPlaced = false;
         location().getWorld().playEffect(location(), Effect.WITHER_BREAK_BLOCK,0,10);
         BlockData blockData = location().getBlock().getBlockData();
@@ -44,5 +41,10 @@ public abstract class LootChestHandler implements TreasureEntity{
         location().getBlock().setType(Material.AIR);
         timeUntilRespawn = random.nextInt(baseRespawnDuration,baseRespawnDuration+respawnVariation);
         timeSinceLastOpened = -timeUntilRespawn;
+    }
+
+    @Override
+    public boolean canInteract(Player player) {
+        return isPlaced;
     }
 }

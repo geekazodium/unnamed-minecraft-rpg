@@ -1,12 +1,16 @@
 package com.geekazodium.cavernsofamethyst.items.Wands;
 
+import com.geekazodium.cavernsofamethyst.GameTickHandler;
 import com.geekazodium.cavernsofamethyst.hitbox.Hitbox;
 import com.geekazodium.cavernsofamethyst.hitbox.HitboxCollisionUtil;
+import com.geekazodium.cavernsofamethyst.items.CustomProjectileHandler.ProjectileHandler;
 import com.geekazodium.cavernsofamethyst.items.WeaponItemHandler;
 import com.geekazodium.cavernsofamethyst.util.ParticleUtil;
+import com.geekazodium.cavernsofamethyst.util.PlayerHandler;
 import com.geekazodium.cavernsofamethyst.util.Quaternion;
 import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -50,6 +54,8 @@ public abstract class WandItemHandler extends WeaponItemHandler {
     }
 
     protected void playWandAnimation(Player player) {
+        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_ATTACK_NODAMAGE,10,0.5f);
+        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP,1,1.5f);
         ParticleUtil.line(
                 player.getLocation().getNearbyPlayers(128,128,128),
                 Particle.CRIT,1,null,
@@ -60,4 +66,20 @@ public abstract class WandItemHandler extends WeaponItemHandler {
                 10,0,0,0,0
         );
     }
+
+    @Override
+    public void activateNormalAbility(PlayerHandler player) {
+        if(!player.consumeMana(1)){
+            return;
+        }
+        Player p = player.getPlayer();
+        GameTickHandler.getInstance().overworldProjectileHandler.addTickingProjectile(new EnergyOrb(
+                p,
+                p.getEyeLocation(),
+                p.getEyeLocation().getDirection(),
+                this
+        ));
+    }
+    @Override
+    public void activateSuperchargedAbility(PlayerHandler player) {}
 }

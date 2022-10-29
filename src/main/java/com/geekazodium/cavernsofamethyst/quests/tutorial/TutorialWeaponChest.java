@@ -15,7 +15,7 @@ import java.util.List;
 
 public class TutorialWeaponChest extends LootChestHandler {
     public TutorialWeaponChest(){
-        respawnVariation = 1200;
+        respawnVariation = 600;
         baseRespawnDuration = 400;
     }
     @Override

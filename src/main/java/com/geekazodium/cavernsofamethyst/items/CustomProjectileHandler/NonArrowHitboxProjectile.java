@@ -2,6 +2,7 @@ package com.geekazodium.cavernsofamethyst.items.CustomProjectileHandler;
 
 import com.geekazodium.cavernsofamethyst.hitbox.Hitbox;
 import com.geekazodium.cavernsofamethyst.hitbox.HitboxCollisionUtil;
+import com.geekazodium.cavernsofamethyst.items.WeaponItemHandler;
 import com.geekazodium.cavernsofamethyst.util.EntityDamageUtil;
 import com.geekazodium.cavernsofamethyst.util.Quaternion;
 import org.bukkit.Location;
@@ -15,13 +16,13 @@ import java.util.List;
 
 public class NonArrowHitboxProjectile implements Projectile{
     protected LinkedList<Hitbox> hitboxes = new LinkedList<>();
-    private final Vector gravity = new Vector(0,-0.05,0);
-    private final PersistentDataContainer weaponData;
+    protected Vector gravity = new Vector(0,-0.01,0);
+    //private final PersistentDataContainer weaponData;
     protected Entity shooter;
     private final ArmorStand arrow;
-    private final Location location;
-    Vector velocity;
-    public NonArrowHitboxProjectile(Entity shooter, Location initial, Vector velocity, PersistentDataContainer container){
+    protected final Location location;
+    protected Vector velocity;
+    public NonArrowHitboxProjectile(Entity shooter, Location initial, Vector velocity, WeaponItemHandler handler){
         hitboxes.add(new Hitbox(
                 new Vector(0,0,0),
                 new Vector(0.5,0.5,0),
@@ -31,8 +32,12 @@ public class NonArrowHitboxProjectile implements Projectile{
         ));
         location = initial;
         this.shooter = shooter;
-        this.weaponData = container;
         arrow = (ArmorStand) shooter.getWorld().spawnEntity(initial, EntityType.ARMOR_STAND);
+        EntityDamageUtil.copyPlayerWeaponDataToProjectile(
+                shooter.getPersistentDataContainer(),
+                arrow,
+                handler
+        );
         //DisguiseAPI.disguiseEntity(arrow,new MiscDisguise(DisguiseType.ARROW));
         this.velocity = velocity;
         //arrow.setVelocity(velocity);
@@ -74,10 +79,18 @@ public class NonArrowHitboxProjectile implements Projectile{
         }
         if(closestDamageable !=null){
             if(shooter instanceof Player player) {
-                EntityDamageUtil.onPlayerDamageEntity(player, weaponData, closestDamageable, null);
-                arrow.remove();
+                onArrowHit(true,player, getWeaponStats(), closestDamageable);
             }
         }
+        if(arrow.rayTraceBlocks(velocity.length()) != null){
+            if(shooter instanceof Player player) {
+                onArrowHit(false,player, getWeaponStats(), null);
+            }
+        }
+    }
+
+    public void onArrowHit(boolean hitEntity,Player player, PersistentDataContainer weaponStats, LivingEntity entityHit){
+        arrow.remove();
     }
 
     @Override
@@ -87,8 +100,13 @@ public class NonArrowHitboxProjectile implements Projectile{
 
     @Override
     public PersistentDataContainer getWeaponStats() {
-        return weaponData;
+        return arrow.getPersistentDataContainer();
     }
+
+    // @Override
+    //public PersistentDataContainer getWeaponStats() {
+        //return weaponData;
+   // }
 
     @Override
     public Entity getShooter() {

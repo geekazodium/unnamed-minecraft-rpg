@@ -1,6 +1,8 @@
 package com.geekazodium.cavernsofamethyst.items.Bows;
 
+import com.geekazodium.cavernsofamethyst.util.PlayerHandler;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -18,11 +20,12 @@ public class WoodenBow extends BowItemHandler {
         itemStack.setItemMeta(itemMeta);
         return itemStack;
     }
+
     /*
-    @Override
-    public int baseMana(Player player) {
-        return 10;
-    }*/
+        @Override
+        public int baseMana(Player player) {
+            return 10;
+        }*/
     @Override
     public int earthBaseDamage() {
         return 5;

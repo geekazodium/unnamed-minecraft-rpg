@@ -36,7 +36,7 @@ public class EntityDamageUtil {
     public static final NamespacedKey MAX_HEALTH_KEY = new NamespacedKey(Main.getInstance(),"maximum_health");
     public static final NamespacedKey PROJECTILE_WEAPON_HANDLER =new NamespacedKey(Main.getInstance(),"projectile_weapon_handler");
 
-    public static void copyPlayerWeaponDataToProjectile(PersistentDataContainer container, Projectile projectile,WeaponItemHandler itemHandler){
+    public static void copyPlayerWeaponDataToProjectile(PersistentDataContainer container, Entity projectile,WeaponItemHandler itemHandler){
         PersistentDataContainer projectileContainer = projectile.getPersistentDataContainer();
         projectileContainer.set(FIRE_BASE_DAMAGE,PersistentDataType.INTEGER,itemHandler.fireBaseDamage());
         projectileContainer.set(EARTH_BASE_DAMAGE,PersistentDataType.INTEGER,itemHandler.earthBaseDamage());

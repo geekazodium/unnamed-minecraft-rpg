@@ -7,4 +7,5 @@ public interface TreasureEntity {
     Location location();
     void tick();
     void interact(Player player);
+    boolean canInteract(Player player);
 }

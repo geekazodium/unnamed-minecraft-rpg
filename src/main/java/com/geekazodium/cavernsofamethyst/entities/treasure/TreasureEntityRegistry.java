@@ -2,6 +2,7 @@ package com.geekazodium.cavernsofamethyst.entities.treasure;
 
 import com.geekazodium.cavernsofamethyst.Main;
 import com.geekazodium.cavernsofamethyst.quests.tutorial.TutorialWeaponChest;
+import org.bukkit.Location;
 import org.bukkit.World;
 
 import java.util.ArrayList;
@@ -16,6 +17,10 @@ public abstract class TreasureEntityRegistry {
         WorldTreasureEntityHandler overworldHandler = new WorldTreasureEntityHandler(Main.overworld);
         handlers.put(Main.overworld, overworldHandler);
         overworldHandler.put(new TutorialWeaponChest());
+        overworldHandler.put(new RandomLootChest(new Location(Main.overworld,-125,72,40)));
+        overworldHandler.put(new RandomLootChest(new Location(Main.overworld,-87,72,16)));
+        overworldHandler.put(new RandomLootChest(new Location(Main.overworld,-107,63,43)));
+        overworldHandler.put(new RandomLootChest(new Location(Main.overworld,-73,62,52)));
     }
     public static void tickHandlers(){
         handlers.forEach((world, worldTreasureEntityHandler) -> {

@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.entity.ProjectileCollideEvent;
 import com.geekazodium.cavernsofamethyst.items.CustomItemHandler;
 import com.geekazodium.cavernsofamethyst.items.CustomItemHandlerRegistry;
 import com.geekazodium.cavernsofamethyst.util.EntityDamageUtil;
+import com.geekazodium.cavernsofamethyst.util.PlayerHandler;
 import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -11,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -41,6 +43,10 @@ public class AttackListener implements Listener {
     @EventHandler
     public void onEvent(EntityDamageByEntityEvent event) {
         Entity damager = event.getDamager();
+        if(damager.getPersistentDataContainer().getOrDefault(PlayerHandler.VISUAL_ONLY_KEY,PersistentDataType.BYTE,(byte)0) != (byte)0){
+            event.setCancelled(true);
+            return;
+        }
         Entity victim = event.getEntity();
         if (damager instanceof Player player) {
             if (CustomItemHandlerRegistry.get(player.getInventory().getItemInMainHand()) != null) {
@@ -85,12 +91,13 @@ public class AttackListener implements Listener {
         if(itemInMainHand == null){
             return;
         }
+        if(!event.getAction().isRightClick()){
+            return;
+        }
         CustomItemHandler customItemHandler = CustomItemHandlerRegistry.get(itemInMainHand);
         if(customItemHandler!=null){
             event.setCancelled(true);
-            if(!customItemHandler.isPlayerOnCD(event.getPlayer())) {
-                customItemHandler.onRightClickMainHand(event);
-            }
+            customItemHandler.onRightClickMainHand(event);
         }
     }
     @EventHandler

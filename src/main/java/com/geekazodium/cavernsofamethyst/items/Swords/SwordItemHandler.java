@@ -3,11 +3,13 @@ package com.geekazodium.cavernsofamethyst.items.Swords;
 import com.geekazodium.cavernsofamethyst.hitbox.Hitbox;
 import com.geekazodium.cavernsofamethyst.hitbox.HitboxCollisionUtil;
 import com.geekazodium.cavernsofamethyst.items.WeaponItemHandler;
+import com.geekazodium.cavernsofamethyst.util.PlayerHandler;
 import com.geekazodium.cavernsofamethyst.util.Quaternion;
 import com.geekazodium.cavernsofamethyst.util.VecUtil;
 import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -51,6 +53,7 @@ public abstract class SwordItemHandler extends WeaponItemHandler {
         }
     }
     protected void playSwordAnimation(Player player){
+        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP,1,1);
         Location location = player.getEyeLocation();
         location.add(
                 VecUtil.getVectorFor(-location.getPitch()-15, -location.getYaw(), 1.75,true)
@@ -64,5 +67,88 @@ public abstract class SwordItemHandler extends WeaponItemHandler {
             }
             otherPlayer.spawnParticle(Particle.SWEEP_ATTACK,location_,1,0,0,0,0);
         }
+    }
+
+    @Override
+    public void activateNormalAbility(PlayerHandler player) {
+        if(!player.consumeMana(1)){
+            return;
+        }
+        Player p = player.getPlayer();
+        p.setVelocity(p.getEyeLocation().getDirection().multiply(1.5).add(new Vector(0,0.5,0)));
+        p.setInvulnerable(true);
+        player.scheduleAction(new DashAttack(player,this),1);
+    }
+
+    private static class DashAttack implements Runnable{
+        int attackFrames = 20;
+        protected static final LinkedList<Hitbox> dashHitboxes = new LinkedList<>();
+        protected static final LinkedList<Hitbox> triggerHitboxes = new LinkedList<>();
+        static{
+            dashHitboxes.add(new Hitbox(
+                    new Vector(0,0,0),
+                    new Vector(0.5,0.5,0),
+                    new Vector(3,3,3),
+                    Quaternion.IDENTITY,
+                    (byte)1
+            ));
+            triggerHitboxes.add(new Hitbox(
+                    new Vector(0,0,0),
+                    new Vector(0.5,0.5,0),
+                    new Vector(1.5,3,1.5),
+                    Quaternion.IDENTITY,
+                    (byte)1
+            ));
+        }
+        PlayerHandler playerHandler;
+        SwordItemHandler swordItemHandler;
+        public DashAttack(PlayerHandler playerHandler,SwordItemHandler itemHandler){
+            this.playerHandler = playerHandler;
+            this.swordItemHandler = itemHandler;
+        }
+        @Override
+        public void run() {
+            Player player = playerHandler.getPlayer();
+            player.setFallDistance(0);
+            HashMap<Entity, Integer> triggered = HitboxCollisionUtil.getCollidedWith(
+                    player.getEyeLocation(),
+                    triggerHitboxes,
+                    List.of(player),
+                    10,10,10
+            );
+            boolean b = !triggered.isEmpty();
+            attackFrames -=1;
+            if(b) {
+                HashMap<Entity, Integer> collidedWith = HitboxCollisionUtil.getCollidedWith(
+                        player.getEyeLocation(),
+                        dashHitboxes,
+                        List.of(player),
+                        10,10,10
+                );
+                for (Entity entity:collidedWith.keySet()) {
+                    if(entity instanceof LivingEntity livingEntity){
+                        swordItemHandler.onDamageHit(player,livingEntity,swordItemHandler);
+                        Vector velocity = livingEntity.getVelocity().clone().add(new Vector(0,0.5,0));
+                        livingEntity.setVelocity(velocity.add(player.getVelocity().normalize()));
+                    }
+                }
+                player.setVelocity(new Vector(0, 0.2, 0)
+                        .add(player.getEyeLocation().getDirection().multiply(-0.5)));
+                swordItemHandler.playSwordAnimation(player);
+                attackFrames = 0;
+                playerHandler.scheduleAction(this,2);
+            }else {
+                if(attackFrames>0){
+                    playerHandler.scheduleAction(this,1);
+                }else {
+                    playerHandler.cancelNextFallDamage();
+                    player.setInvulnerable(false);
+                }
+            }
+        }
+    }
+    @Override
+    public void activateSuperchargedAbility(PlayerHandler player) {
+
     }
 }
