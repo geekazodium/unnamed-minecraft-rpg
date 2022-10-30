@@ -1,6 +1,6 @@
 package com.geekazodium.cavernsofamethyst.items;
 
-import com.geekazodium.cavernsofamethyst.util.PlayerHandler;
+import com.geekazodium.cavernsofamethyst.players.PlayerHandler;
 import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;

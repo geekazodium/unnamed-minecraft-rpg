@@ -4,7 +4,7 @@ import com.geekazodium.cavernsofamethyst.GameTickHandler;
 import com.geekazodium.cavernsofamethyst.Main;
 import com.geekazodium.cavernsofamethyst.items.CustomItemHandler;
 import com.geekazodium.cavernsofamethyst.items.CustomItemHandlerRegistry;
-import com.geekazodium.cavernsofamethyst.items.WeaponItemHandler;
+import com.geekazodium.cavernsofamethyst.items.weapons.WeaponItemHandler;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

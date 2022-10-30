@@ -2,17 +2,16 @@ package com.geekazodium.cavernsofamethyst.util;
 
 import com.geekazodium.cavernsofamethyst.GameTickHandler;
 import com.geekazodium.cavernsofamethyst.Main;
-import com.geekazodium.cavernsofamethyst.holograms.Hologram;
-import com.geekazodium.cavernsofamethyst.holograms.TickingHologram;
+import com.geekazodium.cavernsofamethyst.entities.holograms.Hologram;
+import com.geekazodium.cavernsofamethyst.entities.holograms.TickingHologram;
 import com.geekazodium.cavernsofamethyst.items.CustomItemHandlerRegistry;
-import com.geekazodium.cavernsofamethyst.items.WeaponItemHandler;
+import com.geekazodium.cavernsofamethyst.items.weapons.WeaponItemHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -41,6 +40,7 @@ public class EntityDamageUtil {
         projectileContainer.set(FIRE_BASE_DAMAGE,PersistentDataType.INTEGER,itemHandler.fireBaseDamage());
         projectileContainer.set(EARTH_BASE_DAMAGE,PersistentDataType.INTEGER,itemHandler.earthBaseDamage());
         projectileContainer.set(WATER_BASE_DAMAGE,PersistentDataType.INTEGER,itemHandler.waterBaseDamage());
+        projectileContainer.set(NEUTRAL_BASE_DAMAGE,PersistentDataType.INTEGER,itemHandler.neutralBaseDamage());
         copyIntStatToContainer(BASE_ATTACK_KEY,projectileContainer,container);
         copyIntStatToContainer(EFFECTIVE_ATTACK_KEY,projectileContainer,container);
         copyIntStatToContainer(MAX_MANA_KEY,projectileContainer,container);
@@ -63,7 +63,7 @@ public class EntityDamageUtil {
 
     private static void playerDamageEntity(Player damager, LivingEntity entity, Random random, PersistentDataContainer container, WeaponItemHandler itemHandler) {
         addPlayerToEntityDamagers(damager,entity.getPersistentDataContainer());
-        damageEntity(damager,entity,random,container,itemHandler.fireBaseDamage(),itemHandler.earthBaseDamage(),itemHandler.waterBaseDamage());
+        damageEntity(damager,entity,random,container,itemHandler.fireBaseDamage(),itemHandler.earthBaseDamage(),itemHandler.waterBaseDamage(),itemHandler.neutralBaseDamage());
     }
 
     private static void addPlayerToEntityDamagers(Player damager,PersistentDataContainer entityContainer){
@@ -135,13 +135,14 @@ public class EntityDamageUtil {
         );
     }
 
-    private static void damageEntity(Entity damager, LivingEntity entity, Random random, PersistentDataContainer container,int baseFire,int baseEarth,int baseWater) {
+    private static void damageEntity(Entity damager, LivingEntity entity, Random random, PersistentDataContainer container,int baseFire,int baseEarth,int baseWater,int baseNeutral) {
         float criticalPercent = container.getOrDefault(CRITICAL_RATE,PersistentDataType.FLOAT,0f);
         boolean critical = criticalPercent*100f > random.nextFloat(0,100);
         float critDmg = container.getOrDefault(CRITICAL_DAMAGE,PersistentDataType.FLOAT,0f);
         int fire = defaultDamageRoll(baseFire,critical, critDmg,random);
         int earth = defaultDamageRoll(baseEarth,critical,critDmg, random);
         int water = defaultDamageRoll(baseWater,critical,critDmg, random);
+        int neutral = neutralDamageRoll(baseNeutral,critical,critDmg,random);
         int element = getElement(random, fire, earth, water);
         int elementCap = getElementalPower((element == FIRE)?fire:((element == EARTH)?earth:water));
         int entityElement = getElementForEntity(entity,random);
@@ -176,6 +177,7 @@ public class EntityDamageUtil {
         fire += fire * effectiveAttack/100;
         earth += earth * effectiveAttack/100;
         water += water * effectiveAttack/100;
+        neutral += neutral * effectiveAttack/95;
         /*if(damager instanceof Player player) { code to debug player stats
             debugCharacterStats(player, new String[]{
                     String.valueOf(fire),
@@ -186,11 +188,24 @@ public class EntityDamageUtil {
                     String.valueOf(maxHealth)
             });
         }*/
-        TickingHologram damageHologram = (TickingHologram) Hologram.spawnForDamageEvent(damager, entity,fire,earth,water,element);
+        TickingHologram damageHologram = (TickingHologram) Hologram.spawnForDamageEvent(damager, entity,fire,earth,water,neutral,element);
         GameTickHandler.getInstance().overworldDamageAnimationTickHandler.display(damageHologram);
         applyElement(entity, element, elementCap,50*(critical?2:1));
         entity.setNoDamageTicks(0);
-        entity.damage(fire+earth+water);
+        entity.damage(fire+earth+water+neutral);
+    }
+
+    private static int neutralDamageRoll(float damage, boolean critical, float critDmg, Random random) {
+        if(!(damage>0)){
+            return 0;
+        }
+        return (int) (
+                (
+                        damage+
+                                random.nextFloat(0.5f)*Math.log(damage)+
+                                random.nextFloat(1f)
+                )*(critical?critDmg+1:1)
+        );
     }
 
     private static void debugCharacterStats(Player player,String[] data){
@@ -229,6 +244,7 @@ public class EntityDamageUtil {
         int fire = entityContainer.getOrDefault(FIRE_BASE_DAMAGE,PersistentDataType.INTEGER,0);
         int earth = entityContainer.getOrDefault(EARTH_BASE_DAMAGE,PersistentDataType.INTEGER,0);
         int water = entityContainer.getOrDefault(WATER_BASE_DAMAGE,PersistentDataType.INTEGER,0);
-        damageEntity(damager,player,random,persistentDataContainer,fire,earth,water);
+        int neutral = entityContainer.getOrDefault(NEUTRAL_BASE_DAMAGE,PersistentDataType.INTEGER,0);
+        damageEntity(damager,player,random,persistentDataContainer,fire,earth,water,neutral);
     }
 }

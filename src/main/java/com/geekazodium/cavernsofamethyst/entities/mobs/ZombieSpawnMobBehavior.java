@@ -33,9 +33,7 @@ public class ZombieSpawnMobBehavior extends MobBehavior{
         Bukkit.getMobGoals().addGoal((Mob) entity,0,
                 new TargetLimitedMobGoal((Mob) entity,location,10));
         PersistentDataContainer persistentDataContainer = entity.getPersistentDataContainer();
-        persistentDataContainer.set(WATER_BASE_DAMAGE, PersistentDataType.INTEGER,2);
-        persistentDataContainer.set(FIRE_BASE_DAMAGE, PersistentDataType.INTEGER,2);
-        persistentDataContainer.set(EARTH_BASE_DAMAGE, PersistentDataType.INTEGER,2);
+        persistentDataContainer.set(NEUTRAL_BASE_DAMAGE, PersistentDataType.INTEGER,1);
         persistentDataContainer.set(ENTITY_XP_KEY,PersistentDataType.INTEGER,2);
         return entity;
     }//TODO add neutral damage

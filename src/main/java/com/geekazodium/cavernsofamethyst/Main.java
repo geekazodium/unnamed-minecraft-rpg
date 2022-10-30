@@ -1,11 +1,9 @@
 package com.geekazodium.cavernsofamethyst;
 
-import com.geekazodium.cavernsofamethyst.commands.DebugHitboxCommand;
-import com.geekazodium.cavernsofamethyst.commands.GetItemCommand;
-import com.geekazodium.cavernsofamethyst.commands.ResetCharacterCommand;
-import com.geekazodium.cavernsofamethyst.items.Bows.WoodenBow;
-import com.geekazodium.cavernsofamethyst.items.Swords.WarmBlade;
-import com.geekazodium.cavernsofamethyst.items.Wands.Icicle;
+import com.geekazodium.cavernsofamethyst.commands.*;
+import com.geekazodium.cavernsofamethyst.items.weapons.bows.WoodenBow;
+import com.geekazodium.cavernsofamethyst.items.weapons.swords.WarmBlade;
+import com.geekazodium.cavernsofamethyst.items.weapons.wands.Icicle;
 import com.geekazodium.cavernsofamethyst.listeners.*;
 import org.bukkit.GameRule;
 import org.bukkit.NamespacedKey;
@@ -34,6 +32,7 @@ public class Main extends JavaPlugin {
 
     private void setGameSettings(){
         overworld.setGameRule(GameRule.DO_WEATHER_CYCLE,false);
+        overworld.setGameRule(GameRule.NATURAL_REGENERATION,false);
         overworld.setGameRule(GameRule.RANDOM_TICK_SPEED,0);
         overworld.setClearWeatherDuration(100);
         overworld.setGameRule(GameRule.DO_FIRE_TICK,false);
@@ -77,6 +76,8 @@ public class Main extends JavaPlugin {
 
     private void registerCommandListeners(){
         minecraftServer.getPluginCommand("getItem").setExecutor(new GetItemCommand());
+        minecraftServer.getPluginCommand("skillMenu").setExecutor(new SkillMenuCommand());
+        minecraftServer.getPluginCommand("setMaxHealth").setExecutor(new SetHealthCommand());
         minecraftServer.getPluginCommand("resetCharacter").setExecutor(new ResetCharacterCommand());
         minecraftServer.getPluginCommand("debugHitbox").setExecutor(new DebugHitboxCommand());
         minecraftServer.getPluginCommand("generateDungeon").setExecutor(new DebugHitboxCommand());

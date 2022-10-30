@@ -3,7 +3,7 @@ package com.geekazodium.cavernsofamethyst.listeners;
 import com.geekazodium.cavernsofamethyst.GameTickHandler;
 import com.geekazodium.cavernsofamethyst.items.CustomItemHandler;
 import com.geekazodium.cavernsofamethyst.items.CustomItemHandlerRegistry;
-import com.geekazodium.cavernsofamethyst.util.PlayerHandler;
+import com.geekazodium.cavernsofamethyst.players.PlayerHandler;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,6 +23,7 @@ public class PlayerJoinListener implements Listener {
         GameTickHandler.players.put(player, handler);
         updatePlayerItems(player);
         handler.updateStats();
+        //handler.scheduleAction();
     }
 
     @EventHandler

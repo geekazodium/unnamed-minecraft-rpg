@@ -2,7 +2,7 @@ package com.geekazodium.cavernsofamethyst.entities.mobs;
 
 import com.destroystokyo.paper.ParticleBuilder;
 import com.geekazodium.cavernsofamethyst.Main;
-import com.geekazodium.cavernsofamethyst.holograms.Hologram;
+import com.geekazodium.cavernsofamethyst.entities.holograms.Hologram;
 import com.geekazodium.cavernsofamethyst.util.ElementalReactionUtil;
 import com.geekazodium.cavernsofamethyst.util.EntityDisplayUtil;
 import org.bukkit.*;
@@ -20,6 +20,8 @@ public abstract class MobBehavior {
     public static final NamespacedKey MOB_DISPLAY_NAME_KEY = new NamespacedKey(Main.getInstance(),"mobdisplayname");
     int entityCap;
     protected List<LivingEntity> entities;
+    protected int spawnDelay = 40;
+    private int spawnTick = 0;
     protected HashMap<LivingEntity, Hologram> labels;
     protected final Location center;
     protected final double spawnRadius;
@@ -38,14 +40,18 @@ public abstract class MobBehavior {
 
     public void tick(World world) { //TODO check if entity can't pathfinder back
         if(entities.size()<entityCap){
-            Location spawnLocation = getSpawnLocation();
-            if(!spawnLocation.getBlock().isCollidable()) {
-                spawnLocation.add(0.5,0,0.5);
-                LivingEntity entity = spawnEntity(world, spawnLocation);
-                Hologram hologram = Hologram.spawnForEntity(entity);
-                playSpawnEffect(entity);
-                entities.add(entity);
-                labels.put(entity, hologram);
+            spawnTick+=1;
+            if(spawnTick > spawnDelay) {
+                spawnTick = 0;
+                Location spawnLocation = getSpawnLocation();
+                if (!spawnLocation.getBlock().isCollidable()) {
+                    spawnLocation.add(0.5, 0, 0.5);
+                    LivingEntity entity = spawnEntity(world, spawnLocation);
+                    Hologram hologram = Hologram.spawnForEntity(entity);
+                    playSpawnEffect(entity);
+                    entities.add(entity);
+                    labels.put(entity, hologram);
+                }
             }
         }
         for (LivingEntity entity:entities) {

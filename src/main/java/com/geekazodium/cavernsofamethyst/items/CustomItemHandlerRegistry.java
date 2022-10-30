@@ -1,5 +1,6 @@
 package com.geekazodium.cavernsofamethyst.items;
 
+import com.geekazodium.cavernsofamethyst.items.weapons.WeaponItemHandler;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;

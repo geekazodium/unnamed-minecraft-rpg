@@ -21,3 +21,9 @@
       description: reset your adventure (used for testing only)
       permission: operator
       permission-message: you do not have the permissions to use this command
+    setMaxHealth:
+      description: set max health (used for testing only)
+      permission: operator
+      permission-message: you do not have the permissions to use this command
+    skillMenu:
+      description: open player attribute menu

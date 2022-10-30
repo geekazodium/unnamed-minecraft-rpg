@@ -30,6 +30,8 @@ public class ElementalReactionUtil {
             new NamespacedKey(Main.getInstance(),"earth_base_damage");
     public static final NamespacedKey WATER_BASE_DAMAGE =
             new NamespacedKey(Main.getInstance(),"water_base_damage");
+    public static final NamespacedKey NEUTRAL_BASE_DAMAGE =
+            new NamespacedKey(Main.getInstance(),"neutral_base_damage");
     public static final int totalElements=3;
 
     public static void tickEntities(List<Entity> entities){

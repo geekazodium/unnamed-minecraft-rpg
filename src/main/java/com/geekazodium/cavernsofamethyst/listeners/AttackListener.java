@@ -4,7 +4,7 @@ import com.destroystokyo.paper.event.entity.ProjectileCollideEvent;
 import com.geekazodium.cavernsofamethyst.items.CustomItemHandler;
 import com.geekazodium.cavernsofamethyst.items.CustomItemHandlerRegistry;
 import com.geekazodium.cavernsofamethyst.util.EntityDamageUtil;
-import com.geekazodium.cavernsofamethyst.util.PlayerHandler;
+import com.geekazodium.cavernsofamethyst.players.PlayerHandler;
 import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -49,6 +48,9 @@ public class AttackListener implements Listener {
         }
         Entity victim = event.getEntity();
         if (damager instanceof Player player) {
+            if(victim instanceof Player){
+                event.setCancelled(true);
+            }
             if (CustomItemHandlerRegistry.get(player.getInventory().getItemInMainHand()) != null) {
                 event.setCancelled(true);
             }

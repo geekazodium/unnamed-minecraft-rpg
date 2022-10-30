@@ -4,9 +4,10 @@ import com.geekazodium.cavernsofamethyst.entities.mobs.OverworldMobBehaviorManag
 import com.geekazodium.cavernsofamethyst.entities.npc.WorldNPCHandler;
 import com.geekazodium.cavernsofamethyst.entities.npc.overworld.OverworldNPCHandler;
 import com.geekazodium.cavernsofamethyst.entities.treasure.TreasureEntityRegistry;
-import com.geekazodium.cavernsofamethyst.holograms.DamageAnimationTickHandler;
-import com.geekazodium.cavernsofamethyst.items.CustomProjectileHandler.ProjectileHandler;
-import com.geekazodium.cavernsofamethyst.util.PlayerHandler;
+import com.geekazodium.cavernsofamethyst.entities.holograms.DamageAnimationTickHandler;
+import com.geekazodium.cavernsofamethyst.items.projectiles.ProjectileHandler;
+import com.geekazodium.cavernsofamethyst.players.PlayerHandler;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -41,14 +42,25 @@ public class GameTickHandler implements Runnable {
 
     @Override
     public void run() {
-        players.forEach(GameTickHandler::accept);
-        overworldMobSpawningManager.tick();
-        overworldNPCHandler.tick();
-        overworldDamageAnimationTickHandler.tick();
-        overworldProjectileHandler.tick();
-        TreasureEntityRegistry.tickHandlers();
-        if(stop){
-            return;
+        try {
+            players.forEach(GameTickHandler::accept);
+            overworldMobSpawningManager.tick();
+            overworldNPCHandler.tick();
+            overworldDamageAnimationTickHandler.tick();
+            overworldProjectileHandler.tick();
+            TreasureEntityRegistry.tickHandlers();
+            if (stop) {
+                return;
+            }
+        }catch(Exception e){
+            Bukkit.getServer().getOnlinePlayers().forEach(player -> {
+                if(player.hasPermission("operator")){
+                    player.sendMessage(e.getMessage());
+                    for (StackTraceElement s : e.getStackTrace()) {
+                        player.sendMessage(s.toString());
+                    }
+                }
+            });
         }
         minecraftServer.getScheduler().scheduleSyncDelayedTask(Main.getInstance(),this,1);
     }

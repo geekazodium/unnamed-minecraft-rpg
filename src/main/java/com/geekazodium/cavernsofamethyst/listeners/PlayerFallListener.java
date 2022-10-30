@@ -1,7 +1,7 @@
 package com.geekazodium.cavernsofamethyst.listeners;
 
 import com.geekazodium.cavernsofamethyst.GameTickHandler;
-import com.geekazodium.cavernsofamethyst.util.PlayerHandler;
+import com.geekazodium.cavernsofamethyst.players.PlayerHandler;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,7 +15,7 @@ public class PlayerFallListener implements Listener {
         }
         if(event.getEntity() instanceof Player player){
             PlayerHandler handler = GameTickHandler.getPlayerHandler(player);
-            //handler.onFallDamage(event);
+            handler.onFallEvent(event);
         }
     }
 }
