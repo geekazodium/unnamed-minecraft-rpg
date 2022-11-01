@@ -1,7 +1,7 @@
 package com.geekazodium.cavernsofamethyst.commands;
 
-import com.geekazodium.cavernsofamethyst.players.menus.Menu;
-import com.geekazodium.cavernsofamethyst.players.menus.PlayerSkillMenu;
+import com.geekazodium.cavernsofamethyst.util.menus.Menu;
+import com.geekazodium.cavernsofamethyst.players.skills.PlayerSkillMenu;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

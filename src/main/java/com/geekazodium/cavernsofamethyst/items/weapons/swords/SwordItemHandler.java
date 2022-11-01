@@ -81,7 +81,7 @@ public abstract class SwordItemHandler extends WeaponItemHandler {
     }
 
     private static class DashAttack implements Runnable{
-        int attackFrames = 20;
+        int attackFrames = 10;
         protected static final LinkedList<Hitbox> dashHitboxes = new LinkedList<>();
         protected static final LinkedList<Hitbox> triggerHitboxes = new LinkedList<>();
         static{
@@ -102,6 +102,7 @@ public abstract class SwordItemHandler extends WeaponItemHandler {
         }
         PlayerHandler playerHandler;
         SwordItemHandler swordItemHandler;
+        //public List<Entity> hitEntities = new ArrayList<>();
         public DashAttack(PlayerHandler playerHandler,SwordItemHandler itemHandler){
             this.playerHandler = playerHandler;
             this.swordItemHandler = itemHandler;
@@ -109,6 +110,12 @@ public abstract class SwordItemHandler extends WeaponItemHandler {
         @Override
         public void run() {
             Player player = playerHandler.getPlayer();
+            if(attackFrames<=0) {
+                playerHandler.cancelNextFallDamage();
+                player.setInvulnerable(false);
+                return;
+            }
+            spawnDashParticles(player.getLocation());
             List<Entity> nearbyPlayers = List.copyOf(player.getLocation().getNearbyPlayers(10));
             player.setFallDistance(0);
             HashMap<Entity, Integer> triggered = HitboxCollisionUtil.getCollidedWith(
@@ -117,7 +124,13 @@ public abstract class SwordItemHandler extends WeaponItemHandler {
                     nearbyPlayers,
                     10,10,10
             );
-            boolean b = !triggered.isEmpty();
+            boolean b = false;
+            for (Entity entity:triggered.keySet()){
+                if(entity instanceof LivingEntity){
+                    b = true;
+                    break;
+                }
+            }
             attackFrames -=1;
             if(b) {
                 HashMap<Entity, Integer> collidedWith = HitboxCollisionUtil.getCollidedWith(
@@ -136,16 +149,22 @@ public abstract class SwordItemHandler extends WeaponItemHandler {
                 player.setVelocity(new Vector(0, 0.2, 0)
                         .add(player.getEyeLocation().getDirection().multiply(-0.5)));
                 swordItemHandler.playSwordAnimation(player);
-                attackFrames = 0;
+                attackFrames = -1;
                 playerHandler.scheduleAction(this,2);
             }else {
                 if(attackFrames>0){
                     playerHandler.scheduleAction(this,1);
-                }else {
+                }else{
                     playerHandler.cancelNextFallDamage();
                     player.setInvulnerable(false);
                 }
             }
+        }
+
+        private void spawnDashParticles(Location location){
+            location.getNearbyPlayers(64).forEach(player -> {
+                player.spawnParticle(Particle.EXPLOSION_NORMAL,location,1,0,0,0,0);
+            });
         }
     }
     @Override

@@ -174,10 +174,10 @@ public class EntityDamageUtil {
                 }
             }
         }
-        fire += fire * effectiveAttack/100;
-        earth += earth * effectiveAttack/100;
-        water += water * effectiveAttack/100;
-        neutral += neutral * effectiveAttack/95;
+        fire += fire * effectiveAttack/10;
+        earth += earth * effectiveAttack/10;
+        water += water * effectiveAttack/10;
+        neutral += neutral * effectiveAttack/8;
         /*if(damager instanceof Player player) { code to debug player stats
             debugCharacterStats(player, new String[]{
                     String.valueOf(fire),

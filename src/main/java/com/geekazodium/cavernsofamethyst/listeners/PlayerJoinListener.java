@@ -22,8 +22,12 @@ public class PlayerJoinListener implements Listener {
         PlayerHandler handler = new PlayerHandler(player);
         GameTickHandler.players.put(player, handler);
         updatePlayerItems(player);
-        handler.updateStats();
-        //handler.scheduleAction();
+        handler.scheduleAction(new Runnable() {
+            @Override
+            public void run() {
+                handler.updateStats();
+            }
+        },1);
     }
 
     @EventHandler

@@ -29,7 +29,7 @@ public class EnergyOrb extends NonArrowHitboxProjectile {
         l.getWorld().getNearbyLivingEntities(l,5).forEach(livingEntity ->
                 EntityDamageUtil.onPlayerProjectileDamageEntity(player,weaponStats,livingEntity)
         );
-        location.getNearbyPlayers(30).forEach(p ->{
+        location.getNearbyPlayers(128).forEach(p ->{
             p.spawnParticle(Particle.EXPLOSION_HUGE,location,3);
         });
         location.getWorld().playSound(location, Sound.ENTITY_GENERIC_EXPLODE,2,1);

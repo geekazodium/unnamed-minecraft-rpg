@@ -24,6 +24,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import javax.xml.stream.events.Namespace;
 import java.util.*;
 
 import static com.geekazodium.cavernsofamethyst.listeners.EntityInteractListener.playerInteractNpcCooldown;
@@ -32,6 +33,9 @@ import static com.geekazodium.cavernsofamethyst.util.EntityDamageUtil.EFFECTIVE_
 
 public class PlayerHandler {
     public static final NamespacedKey VISUAL_ONLY_KEY = new NamespacedKey(Main.getInstance(),"visual_only");
+    public static final NamespacedKey PERSISTENT_HEALTH_MODIFIER = new NamespacedKey(Main.getInstance(),"persistent_health_modifier");
+    public static final NamespacedKey PERSISTENT_MANA_MODIFIER = new NamespacedKey(Main.getInstance(),"persistent_mana_modifier");
+    public static final NamespacedKey PERSISTENT_ATTACK_MODIFIER = new NamespacedKey(Main.getInstance(),"persistent_attack_modifier");
     private final Random random = new Random();
     private final FallDamageCheckTask playerFallCheckTask;
     private final Player player;
@@ -55,6 +59,14 @@ public class PlayerHandler {
         player.setExp(0);
         respawnPlayer();
         resetPlayerQuestMarkers();
+    }
+
+    public int getSkillPointsLeft(){//todo rename this.
+        PersistentDataContainer container = player.getPersistentDataContainer();
+        return level*2
+                - container.getOrDefault(PERSISTENT_HEALTH_MODIFIER,PersistentDataType.INTEGER,0)
+                - container.getOrDefault(PERSISTENT_MANA_MODIFIER,PersistentDataType.INTEGER,0)
+                - container.getOrDefault(PERSISTENT_ATTACK_MODIFIER,PersistentDataType.INTEGER,0);
     }
 
     private void resetPlayerQuestMarkers(){
@@ -88,10 +100,9 @@ public class PlayerHandler {
 
     public void updateStats(){
         player.setHealthScaled(true);
-        //player.setHealthScale(1);
         level = player.getLevel();
         PlayerInventory inventory = player.getInventory();
-        PlayerStats stats = new PlayerStats();
+        PlayerStats stats = new PlayerStats(player);
         CustomItemHandler itemHandler = CustomItemHandlerRegistry.get(inventory.getItem(EquipmentSlot.HAND));
         if(itemHandler != null) {
             itemHandler.applyItemBaseStats(stats,player);
@@ -155,10 +166,6 @@ public class PlayerHandler {
         playerFallCheckTask.onFall(event);
     }
 
-   /* public void onFallDamage(EntityDamageEvent event) {
-        playerFallCheckTask.onFall(event);
-    }*/
-
     private static class FallDamageCheckTask implements Runnable{
         private final Player player;
         private final PlayerHandler handler;
@@ -173,7 +180,6 @@ public class PlayerHandler {
             if(cancel) {
                 if(player.getLocation().subtract(0,1,0).getBlock().isCollidable()){
                     cancel = false;
-                        //!player.getLocation().subtract(0,2,0).getBlock().isCollidable()){
                     player.setFallDistance(0);
                 }
             }
@@ -202,9 +208,7 @@ public class PlayerHandler {
         actionBar = actionBar.style(actionBar.style().color(TextColor.color(0xFF5555)));
         Component append = Component.text("  ❃ MANA " + (int)mana + "/" + maxMana);
         append = append.style(actionBar.style().color(TextColor.color(0x55FFFF)));
-        actionBar = actionBar.append(
-                append
-        );
+        actionBar = actionBar.append(append);
         player.sendActionBar(actionBar);
     }
 
@@ -308,10 +312,11 @@ public class PlayerHandler {
         public int maxHealth;
         public int baseAttack;
         public int maxMana;
-        public PlayerStats(){
-            maxHealth = 5;
-            baseAttack = 5;
-            maxMana = 5;
+        public PlayerStats(Player player){
+            PersistentDataContainer container = player.getPersistentDataContainer();
+            maxHealth = 5+container.getOrDefault(PERSISTENT_HEALTH_MODIFIER,PersistentDataType.INTEGER,0);
+            baseAttack = 5+container.getOrDefault(PERSISTENT_ATTACK_MODIFIER,PersistentDataType.INTEGER,0);
+            maxMana = 5+container.getOrDefault(PERSISTENT_MANA_MODIFIER,PersistentDataType.INTEGER,0);
         }
 
         public void updatePlayer(Player player) {
