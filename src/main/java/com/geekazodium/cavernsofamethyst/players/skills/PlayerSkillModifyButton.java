@@ -9,6 +9,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -45,7 +46,9 @@ public class PlayerSkillModifyButton extends AbstractDynamicButton {
         PersistentDataContainer container = handler.getPlayer().getPersistentDataContainer();
         Integer stat = container.getOrDefault(statKey, PersistentDataType.INTEGER, 0);
         ItemStack itemStack = new ItemStack(Material.BOOK, Math.max(stat, 1));
-        itemStack.getItemMeta().displayName(Component.text(statKey.toString()));
+        ItemMeta meta = itemStack.getItemMeta();
+        meta.displayName(Component.text(statKey.toString()));
+        itemStack.setItemMeta(meta);
         return itemStack;
     }
 }

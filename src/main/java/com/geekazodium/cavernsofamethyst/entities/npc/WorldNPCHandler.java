@@ -47,7 +47,7 @@ public abstract class WorldNPCHandler {
             waitingLoadChunks.add(chunk);
         }
         if(chunk.getWorld()!=world){
-            //LOGGER.warning("attempted to load npc in wrong world");//TODO make error message show coords
+            //LOGGER.warning("attempted to load npc in wrong world");
             return;
         }
         List<NPC> list = npcs.get(chunk.getChunkKey());

@@ -1,6 +1,7 @@
 package com.geekazodium.cavernsofamethyst.listeners;
 
 import com.destroystokyo.paper.event.entity.ProjectileCollideEvent;
+import com.geekazodium.cavernsofamethyst.GameTickHandler;
 import com.geekazodium.cavernsofamethyst.items.CustomItemHandler;
 import com.geekazodium.cavernsofamethyst.items.CustomItemHandlerRegistry;
 import com.geekazodium.cavernsofamethyst.util.EntityDamageUtil;
@@ -34,7 +35,7 @@ public class AttackListener implements Listener {
         CustomItemHandler customItemHandler = CustomItemHandlerRegistry.get(itemInMainHand);
         if(customItemHandler!=null){
             event.setCancelled(true);
-            if(!customItemHandler.isPlayerOnCD(player)) {
+            if(!GameTickHandler.getPlayerHandler(player).isOnCooldown()) {
                 customItemHandler.onLeftClickMainHand(event);
             }
         }

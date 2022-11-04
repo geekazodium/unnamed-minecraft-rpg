@@ -17,6 +17,7 @@ import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -24,21 +25,23 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import javax.xml.stream.events.Namespace;
 import java.util.*;
 
 import static com.geekazodium.cavernsofamethyst.listeners.EntityInteractListener.playerInteractNpcCooldown;
 import static com.geekazodium.cavernsofamethyst.util.EntityDamageUtil.BASE_ATTACK_KEY;
 import static com.geekazodium.cavernsofamethyst.util.EntityDamageUtil.EFFECTIVE_ATTACK_KEY;
+import static org.bukkit.inventory.EquipmentSlot.*;
 
-public class PlayerHandler {
+public class PlayerHandler {//Todo: fix player skills not loading properly
     public static final NamespacedKey VISUAL_ONLY_KEY = new NamespacedKey(Main.getInstance(),"visual_only");
     public static final NamespacedKey PERSISTENT_HEALTH_MODIFIER = new NamespacedKey(Main.getInstance(),"persistent_health_modifier");
     public static final NamespacedKey PERSISTENT_MANA_MODIFIER = new NamespacedKey(Main.getInstance(),"persistent_mana_modifier");
     public static final NamespacedKey PERSISTENT_ATTACK_MODIFIER = new NamespacedKey(Main.getInstance(),"persistent_attack_modifier");
+    public static final double SCALING = 4.47227191413d;
     private final Random random = new Random();
     private final FallDamageCheckTask playerFallCheckTask;
     private final Player player;
+    public int timeUntilNextRegenTick = 0;
     private int attackCooldown = 0;
     private int elementalCharge = 0;
     public float mana = 0;
@@ -55,10 +58,19 @@ public class PlayerHandler {
 
     public void initPlayer(){
         player.getInventory().clear();
+        resetPlayerStatChanges();
+        resetPlayerQuestMarkers();
         player.setLevel(0);
         player.setExp(0);
         respawnPlayer();
-        resetPlayerQuestMarkers();
+        updateStats();
+    }
+
+    private void resetPlayerStatChanges() {
+        PersistentDataContainer container = player.getPersistentDataContainer();
+        container.set(PERSISTENT_HEALTH_MODIFIER,PersistentDataType.INTEGER,0);
+        container.set(PERSISTENT_MANA_MODIFIER,PersistentDataType.INTEGER,0);
+        container.set(PERSISTENT_ATTACK_MODIFIER,PersistentDataType.INTEGER,0);
     }
 
     public int getSkillPointsLeft(){//todo rename this.
@@ -103,15 +115,24 @@ public class PlayerHandler {
         level = player.getLevel();
         PlayerInventory inventory = player.getInventory();
         PlayerStats stats = new PlayerStats(player);
-        CustomItemHandler itemHandler = CustomItemHandlerRegistry.get(inventory.getItem(EquipmentSlot.HAND));
-        if(itemHandler != null) {
-            itemHandler.applyItemBaseStats(stats,player);
-        }
+        applyStatsFromItem(inventory.getItemInMainHand(),stats, HAND);
+        applyStatsFromItem(inventory.getItem(HEAD),stats, HEAD);
+        applyStatsFromItem(inventory.getItem(CHEST),stats,CHEST);
+        applyStatsFromItem(inventory.getItem(LEGS),stats,LEGS);
+        applyStatsFromItem(inventory.getItem(FEET),stats,FEET);
+        maxMana = stats.maxMana;//Changed the order of code execution to hopefully fix the "0 mana" bug
         stats.updatePlayer(player);
-        maxMana = stats.maxMana;
         AttributeInstance maxHp = Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH));
         maxHp.setBaseValue(stats.maxHealth);
         player.setHealth(Math.min(maxHp.getValue(),player.getHealth()));
+    }
+
+    private void applyStatsFromItem(ItemStack item, PlayerStats stats, EquipmentSlot slot){
+        CustomItemHandler itemHandler = CustomItemHandlerRegistry.get(item);
+        if(itemHandler == null) {
+            return;
+        }
+        itemHandler.applyItemBaseStats(stats,player,item,slot);
     }
 
     public void tick(){
@@ -166,6 +187,10 @@ public class PlayerHandler {
         playerFallCheckTask.onFall(event);
     }
 
+    public boolean isOnCooldown() {
+        return getAtkCooldown()>0;
+    }
+
     private static class FallDamageCheckTask implements Runnable{
         private final Player player;
         private final PlayerHandler handler;
@@ -214,17 +239,23 @@ public class PlayerHandler {
 
     private void updateVolatileStats() {
         PersistentDataContainer container = player.getPersistentDataContainer();
+        container.set(EFFECTIVE_ATTACK_KEY,PersistentDataType.INTEGER,container.getOrDefault(BASE_ATTACK_KEY,PersistentDataType.INTEGER,0));
+        if(timeUntilNextRegenTick>0){
+            timeUntilNextRegenTick--;
+            return;
+        }
+        timeUntilNextRegenTick = 20-1;
         if(mana<maxMana) {
-            mana += maxMana/500f;
-        }else if(mana>maxMana){
+            mana += Math.sqrt(maxMana)/ SCALING;
+        }
+        if(mana>maxMana){
             mana = maxMana;
         }
         double maxHealth = Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue();
-        player.setHealthScale((4.47227191413d*Math.sqrt(maxHealth))-0.5);
+        player.setHealthScale((SCALING *Math.sqrt(maxHealth))-0.5);
         if(player.getHealth()<maxHealth) {
-            player.setHealth(Math.min(player.getHealth()+ maxHealth /500f,maxHealth));
+            player.setHealth(Math.min(player.getHealth()+ Math.sqrt(maxHealth)/ SCALING,maxHealth));
         }
-        container.set(EFFECTIVE_ATTACK_KEY,PersistentDataType.INTEGER,container.getOrDefault(BASE_ATTACK_KEY,PersistentDataType.INTEGER,0));
     }
 
     public void setCutscene(CutsceneHandler handler) {

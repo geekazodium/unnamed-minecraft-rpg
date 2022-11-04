@@ -1,9 +1,12 @@
 package com.geekazodium.cavernsofamethyst.hitbox;
 
 import com.geekazodium.cavernsofamethyst.Main;
+import com.geekazodium.cavernsofamethyst.util.ParticleUtil;
+import it.unimi.dsi.fastutil.Pair;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -17,12 +20,7 @@ public class HitboxCollisionUtil {
         for (Hitbox hitbox:hitboxes){
             hitbox.updateCollider(location);
             if(Main.debugHitbox){
-                for (Vector vector:hitbox.getOutline()) {
-                    Location location1 = new Location(location.getWorld(), vector.getX(), vector.getY(), vector.getZ());
-                    for (Player player:location1.getWorld().getPlayers()) {
-                        player.spawnParticle(Particle.REDSTONE, location1,1, new Particle.DustOptions(Color.RED,1));
-                    }
-                }
+                hitbox.renderOutline(location.getWorld());
             }
         }
         HashMap<Entity,Integer> collided = new HashMap<>();
@@ -33,12 +31,7 @@ public class HitboxCollisionUtil {
             Hitbox entityHitbox = EntityHurtBoxUtil.getForEntity(entity);
             entityHitbox.updateCollider(entity.getBoundingBox().getCenter(),0,0);
             if(Main.debugHitbox){
-                for (Vector vector:entityHitbox.getOutline()) {
-                    Location location1 = new Location(location.getWorld(), vector.getX(), vector.getY(), vector.getZ());
-                    for (Player player:location1.getWorld().getPlayers()) {
-                        player.spawnParticle(Particle.REDSTONE, location1,1, new Particle.DustOptions(Color.GREEN,1));
-                    }
-                }
+                entityHitbox.renderOutline(location.getWorld());
             }
             int c = 0;
             for (Hitbox hitbox: hitboxes){

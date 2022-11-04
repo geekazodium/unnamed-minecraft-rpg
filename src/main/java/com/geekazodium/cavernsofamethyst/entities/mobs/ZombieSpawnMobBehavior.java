@@ -36,5 +36,5 @@ public class ZombieSpawnMobBehavior extends MobBehavior{
         persistentDataContainer.set(NEUTRAL_BASE_DAMAGE, PersistentDataType.INTEGER,1);
         persistentDataContainer.set(ENTITY_XP_KEY,PersistentDataType.INTEGER,2);
         return entity;
-    }//TODO add neutral damage
+    }
 }

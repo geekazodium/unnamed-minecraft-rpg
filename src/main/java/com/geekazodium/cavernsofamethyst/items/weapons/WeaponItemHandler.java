@@ -8,6 +8,7 @@ import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 import static com.geekazodium.cavernsofamethyst.GameTickHandler.getPlayerHandler;
 
@@ -66,11 +67,13 @@ public abstract class WeaponItemHandler extends CustomItemHandler {
     public int waterBaseDamage(){
         return 0;
     }
-    public int elementalChargeReq(){return Integer.MAX_VALUE;}
-    @Override
-    public boolean isPlayerOnCD(Player player) {
-        return getPlayerHandler(player).getAtkCooldown()>0;
-    }
 
     public int neutralBaseDamage() {return 0;}
+
+    @Override
+    protected EquipmentSlot effectiveSlot() {
+        return EquipmentSlot.HAND;
+    }
+
+    public int elementalChargeReq(){return Integer.MAX_VALUE;}
 }

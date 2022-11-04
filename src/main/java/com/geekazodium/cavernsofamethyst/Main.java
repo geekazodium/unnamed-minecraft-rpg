@@ -1,6 +1,7 @@
 package com.geekazodium.cavernsofamethyst;
 
 import com.geekazodium.cavernsofamethyst.commands.*;
+import com.geekazodium.cavernsofamethyst.items.armor.helmet.LeatherCap;
 import com.geekazodium.cavernsofamethyst.items.weapons.bows.WoodenBow;
 import com.geekazodium.cavernsofamethyst.items.weapons.swords.WarmBlade;
 import com.geekazodium.cavernsofamethyst.items.weapons.wands.Icicle;
@@ -51,6 +52,7 @@ public class Main extends JavaPlugin {
         new WarmBlade().register();
         new WoodenBow().register();
         new Icicle().register();
+        new LeatherCap().register();
         tickHandler = new GameTickHandler();
         minecraftServer.getScheduler().scheduleSyncDelayedTask(this, tickHandler,1);
         LOGGER.log(Level.INFO,"caverns of amethyst has been successfully loaded");

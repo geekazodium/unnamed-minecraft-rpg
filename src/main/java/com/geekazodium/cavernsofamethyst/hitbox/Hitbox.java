@@ -1,7 +1,13 @@
 package com.geekazodium.cavernsofamethyst.hitbox;
 
+import com.geekazodium.cavernsofamethyst.util.ParticleUtil;
 import com.geekazodium.cavernsofamethyst.util.Quaternion;
+import it.unimi.dsi.fastutil.Pair;
+import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
@@ -104,7 +110,7 @@ public class Hitbox {
         return effectiveOffset.clone().add(pos);
     }
 
-    public Vector[] getOutline() {
+    public List<Pair<Vector,Vector>> getOutline() {
         Vector pos = centerPoint();
         Vector[] points = new Vector[]{
                 new Vector(0, 0, 0), new Vector(1, 0, 0),
@@ -112,19 +118,66 @@ public class Hitbox {
                 new Vector(0, 0, 1), new Vector(1, 0, 1),
                 new Vector(0, 1, 1), new Vector(1, 1, 1)
         };
-        List<Vector> r = new ArrayList<>();
+        Pair<Vector,Vector>[] lines = new Pair[]{//ToDo add line class to store data about each line of hitbox outline
+                //x
+                Pair.of(points[0],points[1]),
+                Pair.of(points[2],points[3]),
+                Pair.of(points[4],points[5]),
+                Pair.of(points[6],points[7]),
+                //y
+                Pair.of(points[0],points[2]),
+                Pair.of(points[1],points[3]),
+                Pair.of(points[4],points[6]),
+                Pair.of(points[5],points[7]),
+                //z
+                Pair.of(points[0],points[4]),
+                Pair.of(points[1],points[5]),
+                Pair.of(points[2],points[6]),
+                Pair.of(points[3],points[7])
+        };
+        List<Pair<Vector,Vector>> r = new ArrayList<>();
         if (finalRotation == null) {
             finalRotation = new Quaternion(Quaternion.IDENTITY);
         }
-        for (Vector point : points) {
+        for (Pair<Vector,Vector> line: lines) {
+            Vector point = line.left();
             Vector vec = applyRotationMatrix(new Vector(
                     (point.getX() - 0.5d) * size.getX(),
                     (point.getY() - 0.5d) * size.getY(),
                     (point.getZ() - 0.5d) * size.getZ()
             ), getRotationMatrix(this.finalRotation)).clone().add(pos);
-            r.add(vec);
+            Vector point2 = line.right();
+            Vector vec2 = applyRotationMatrix(new Vector(
+                    (point2.getX() - 0.5d) * size.getX(),
+                    (point2.getY() - 0.5d) * size.getY(),
+                    (point2.getZ() - 0.5d) * size.getZ()
+            ), getRotationMatrix(this.finalRotation)).clone().add(pos);
+            r.add(Pair.of(vec,vec2));
         }
-        return r.toArray(new Vector[0]);
+        return r;
+    }
+
+    public void renderOutline(World world){
+        for (Pair<Vector, Vector> pair: this.getOutline()) {
+            Vector p1 = pair.left();
+            Vector p2 = pair.right();
+            for (Player player:world.getPlayers()) {
+                ParticleUtil.line(
+                        player,
+                        Particle.REDSTONE,
+                        1,
+                        new Particle.DustOptions(Color.RED,1),
+                        getLocationForVec(world, p1),
+                        getLocationForVec(world, p2),
+                        (int)Math.max(2,p1.distance(p2)*5),
+                        0,0,0,
+                        0
+                );
+            }
+        }
+    }
+    private static Location getLocationForVec(World world,Vector vector){
+        return new Location(world, vector.getX(), vector.getY(), vector.getZ());
     }
 
     public void updateCollider(Location location) {

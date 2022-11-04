@@ -4,6 +4,7 @@ import com.geekazodium.cavernsofamethyst.players.PlayerHandler;
 import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -53,7 +54,6 @@ public abstract class CustomItemHandler {
         return addItemIdToData(item());
     }
 
-    public abstract boolean isPlayerOnCD(Player player);
     public int baseHealth(Player player){
         return 0;
     }
@@ -63,8 +63,12 @@ public abstract class CustomItemHandler {
     public int baseMana(Player player){
         return 0;
     }
+    protected abstract EquipmentSlot effectiveSlot();
 
-    public void applyItemBaseStats(PlayerHandler.PlayerStats stats,Player player) {
+    public void applyItemBaseStats(PlayerHandler.PlayerStats stats, Player player, ItemStack item, EquipmentSlot slot) {
+        if(!slot.equals(effectiveSlot())){
+            return;
+        }
         stats.maxHealth += this.baseHealth(player);
         stats.baseAttack += this.baseAttack(player);
         stats.maxMana += this.baseMana(player);

@@ -6,7 +6,7 @@ import org.bukkit.Location;
 
 import static com.geekazodium.cavernsofamethyst.Main.overworld;
 
-public class OverworldNPCHandler extends WorldNPCHandler {
+public class OverworldNPCHandler extends WorldNPCHandler {//TODO make another more interesting quest
     public OverworldNPCHandler() {
         super(overworld);
         this.addNPC(new TutorialNPC1(this));
