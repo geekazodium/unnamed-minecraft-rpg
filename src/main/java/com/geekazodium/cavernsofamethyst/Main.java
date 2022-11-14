@@ -78,6 +78,7 @@ public class Main extends JavaPlugin {
 
     private void registerCommandListeners(){
         minecraftServer.getPluginCommand("getItem").setExecutor(new GetItemCommand());
+        minecraftServer.getPluginCommand("setSkin").setExecutor(new SetSkinCommand());
         minecraftServer.getPluginCommand("skillMenu").setExecutor(new SkillMenuCommand());
         minecraftServer.getPluginCommand("setMaxHealth").setExecutor(new SetHealthCommand());
         minecraftServer.getPluginCommand("resetCharacter").setExecutor(new ResetCharacterCommand());
