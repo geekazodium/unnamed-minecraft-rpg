@@ -13,6 +13,7 @@ plugins {
   `java-library`
   id("io.papermc.paperweight.userdev") version "1.3.8"
   id("xyz.jpenilla.run-paper") version "1.1.0" // Adds runServer and runMojangMappedServer tasks for testing
+  id("com.github.johnrengelman.shadow") version "7.1.2"
   //id("net.minecrell.plugin-yml.bukkit") version "0.5.2" // Generates plugin.yml
 }
 
@@ -26,8 +27,9 @@ java {
 }
 
 dependencies {
-  paperDevBundle("1.18.2-R0.1-SNAPSHOT")
-  implementation("com.github.libraryaddict:LibsDisguises:10.0.31")
+  implementation("org.reflections:reflections:0.10.2")
+    paperDevBundle("1.18.2-R0.1-SNAPSHOT")
+  compileOnly("com.github.libraryaddict:LibsDisguises:10.0.31")
   compileOnly("com.comphenix.protocol","ProtocolLib","4.7.0")
   // paperweightDevBundle("com.example.paperfork", "1.19.2-R0.1-SNAPSHOT")
 
