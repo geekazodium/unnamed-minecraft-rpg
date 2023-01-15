@@ -1,16 +1,16 @@
 package com.geekazodium.cavernsofamethyst.hitbox;
 
-import com.geekazodium.cavernsofamethyst.util.Quaternion;
+import com.mojang.math.Quaternion;
 import org.bukkit.util.Vector;
 
 import static java.lang.Math.abs;
 
 public class CollisionUtil {
     public static Vector[] getRotationMatrix(Quaternion q) {
-        double w = q.getW();
-        double x = q.getX();
-        double y = q.getY();
-        double z = q.getZ();
+        double w = q.r();
+        double x = q.i();
+        double y = q.j();
+        double z = q.k();
         double n = w * w +
                 x * x +
                 y * y +

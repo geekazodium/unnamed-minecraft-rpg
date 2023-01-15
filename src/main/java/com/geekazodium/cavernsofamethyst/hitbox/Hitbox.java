@@ -1,7 +1,7 @@
 package com.geekazodium.cavernsofamethyst.hitbox;
 
 import com.geekazodium.cavernsofamethyst.util.ParticleUtil;
-import com.geekazodium.cavernsofamethyst.util.Quaternion;
+import com.mojang.math.Quaternion;
 import it.unimi.dsi.fastutil.Pair;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -54,7 +54,7 @@ public class Hitbox {
                 new Vector(0,0,0),
                 new Vector(0.5,0.5,0.5),
                 new Vector(boundingBox.getWidthX(),boundingBox.getHeight(), boundingBox.getWidthZ()),
-                Quaternion.fromEulerYxz(0,0,0),
+                Quaternion.fromYXZ(0,0,0),
                 (byte)0
         );
     }
@@ -89,7 +89,7 @@ public class Hitbox {
     public void updateCollider(Vector pos,float pitch,float yaw){
         this.updateCollider(
                 pos,
-                Quaternion.fromEulerYxz(
+                Quaternion.fromYXZ(
                         this.copyRotationType==1||this.copyRotationType==3?(float) toRadians(-yaw):0,
                         this.copyRotationType==2||this.copyRotationType==3?(float) toRadians(pitch):0,
                         0
@@ -99,7 +99,7 @@ public class Hitbox {
 
     public void updateRotation(Quaternion rotation) {
         this.finalRotation = new Quaternion(rotation);
-        this.finalRotation.hamiltonProduct(this.rotation);
+        this.finalRotation.mul(this.rotation);
         this.collider.setRotationAxis(getRotationMatrix(finalRotation));
     }
 
@@ -137,7 +137,7 @@ public class Hitbox {
         };
         List<Pair<Vector,Vector>> r = new ArrayList<>();
         if (finalRotation == null) {
-            finalRotation = new Quaternion(Quaternion.IDENTITY);
+            finalRotation = new Quaternion(Quaternion.ONE);
         }
         for (Pair<Vector,Vector> line: lines) {
             Vector point = line.left();

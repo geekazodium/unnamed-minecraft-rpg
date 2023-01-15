@@ -6,7 +6,7 @@ import com.geekazodium.cavernsofamethyst.hitbox.HitboxCollisionUtil;
 import com.geekazodium.cavernsofamethyst.items.weapons.WeaponItemHandler;
 import com.geekazodium.cavernsofamethyst.util.ParticleUtil;
 import com.geekazodium.cavernsofamethyst.players.PlayerHandler;
-import com.geekazodium.cavernsofamethyst.util.Quaternion;
+import com.mojang.math.Quaternion;
 import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -26,7 +26,7 @@ public abstract class WandItemHandler extends WeaponItemHandler {
                 new Vector(0,0,0),
                 new Vector(0.5,0.5,0),
                 new Vector(0.75,0.75,15),
-                Quaternion.IDENTITY,
+                Quaternion.ONE,
                 (byte)3
         ));
     }

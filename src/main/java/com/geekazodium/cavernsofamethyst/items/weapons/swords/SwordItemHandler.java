@@ -4,8 +4,8 @@ import com.geekazodium.cavernsofamethyst.hitbox.Hitbox;
 import com.geekazodium.cavernsofamethyst.hitbox.HitboxCollisionUtil;
 import com.geekazodium.cavernsofamethyst.items.weapons.WeaponItemHandler;
 import com.geekazodium.cavernsofamethyst.players.PlayerHandler;
-import com.geekazodium.cavernsofamethyst.util.Quaternion;
 import com.geekazodium.cavernsofamethyst.util.VecUtil;
+import com.mojang.math.Quaternion;
 import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -25,7 +25,7 @@ public abstract class SwordItemHandler extends WeaponItemHandler {
                 new Vector(0,0,0),
                 new Vector(0.5,0.5,0),
                 new Vector(3,0.75,3),
-                Quaternion.IDENTITY,
+                Quaternion.ONE,
                 (byte)3
         ));
     }
@@ -89,14 +89,14 @@ public abstract class SwordItemHandler extends WeaponItemHandler {
                     new Vector(0,0,0),
                     new Vector(0.5,0.5,0),
                     new Vector(3,3,3),
-                    Quaternion.IDENTITY,
+                    Quaternion.ONE,
                     (byte)1
             ));
             triggerHitboxes.add(new Hitbox(
                     new Vector(0,0,0),
                     new Vector(0.5,0.5,0),
                     new Vector(1.5,3,1.5),
-                    Quaternion.IDENTITY,
+                    Quaternion.ONE,
                     (byte)1
             ));
         }

@@ -84,17 +84,17 @@ public class PlayerHandler {
         this.playerMusicHandler= new PlayerMusicHandler(player);
     }
 
-    public void updateStats(){
+    /*public void updateStats(){
         level = player.getLevel();
         PlayerInventory inventory = player.getInventory();
         PlayerStats stats = new PlayerStats();
         CustomItemHandler itemHandler = CustomItemHandlerRegistry.get(inventory.getItem(EquipmentSlot.HAND));
         if(itemHandler != null) {
-            itemHandler.applyItemBaseStats(stats,player);
+            itemHandler.applyItemBaseStats(stats,player,itemHandler,player);
         }
         stats.updatePlayer(player);
         maxMana = stats.maxMana;
-    }
+    }*/
 
     public void tick(){
         player.setFoodLevel(20);

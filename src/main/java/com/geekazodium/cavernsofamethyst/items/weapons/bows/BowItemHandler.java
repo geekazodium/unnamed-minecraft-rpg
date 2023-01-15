@@ -8,6 +8,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import static com.geekazodium.cavernsofamethyst.util.EntityDamageUtil.copyPlayerWeaponDataToProjectile;
@@ -25,12 +26,16 @@ public abstract class BowItemHandler extends WeaponItemHandler {
         playBowAnimation(player);
         Location eyeLocation = player.getEyeLocation();
         PersistentDataContainer container = player.getPersistentDataContainer();
-        Arrow arrow = eyeLocation.getWorld().spawnArrow(eyeLocation,eyeLocation.getDirection(),3,0);
+        spawnArrow(player, eyeLocation, eyeLocation.getDirection(), container);
+        //NonArrowHitboxProjectile projectile = new NonArrowHitboxProjectile(player, eyeLocation, eyeLocation.getDirection().multiply(3),container);
+        //GameTickHandler.getInstance().overworldProjectileHandler.addTickingProjectile(projectile);
+    }
+
+    protected void spawnArrow(Player player, Location eyeLocation, Vector direction, PersistentDataContainer container) {
+        Arrow arrow = eyeLocation.getWorld().spawnArrow(eyeLocation, direction,3,0);
         arrow.setPersistent(false);
         arrow.setShooter(player);
         copyPlayerWeaponDataToProjectile(container,arrow,this);
-        //NonArrowHitboxProjectile projectile = new NonArrowHitboxProjectile(player, eyeLocation, eyeLocation.getDirection().multiply(3),container);
-        //GameTickHandler.getInstance().overworldProjectileHandler.addTickingProjectile(projectile);
     }
 
     protected void playBowAnimation(Player player) {

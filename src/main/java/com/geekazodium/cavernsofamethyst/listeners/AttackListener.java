@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -21,17 +22,19 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.projectiles.ProjectileSource;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.geekazodium.cavernsofamethyst.entities.npc.PlayerNPC.isNPCKey;
 
 public class AttackListener implements Listener {
+
     @EventHandler
     public void onEvent(PlayerArmSwingEvent event){
         Player player = event.getPlayer();
         PlayerInventory inventory = player.getInventory();
         ItemStack itemInMainHand = inventory.getItemInMainHand();
-        if(itemInMainHand == null){
-            return;
-        }
+        if(itemInMainHand == null)return;
         CustomItemHandler customItemHandler = CustomItemHandlerRegistry.get(itemInMainHand);
         if(customItemHandler!=null){
             event.setCancelled(true);
@@ -91,12 +94,10 @@ public class AttackListener implements Listener {
     public void onEvent(PlayerInteractEvent event){
         PlayerInventory inventory = event.getPlayer().getInventory();
         ItemStack itemInMainHand = inventory.getItemInMainHand();
-        if(itemInMainHand == null){
-            return;
-        }
-        if(!event.getAction().isRightClick()){
-            return;
-        }
+        PlayerHandler playerHandler = GameTickHandler.getPlayerHandler(event.getPlayer());
+        if(playerHandler.checkForDuplicateRightClick(event)) return;
+        if(itemInMainHand == null)return;
+        if(!event.getAction().isRightClick())return;
         CustomItemHandler customItemHandler = CustomItemHandlerRegistry.get(itemInMainHand);
         if(customItemHandler!=null){
             event.setCancelled(true);

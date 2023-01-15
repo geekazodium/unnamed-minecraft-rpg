@@ -15,7 +15,9 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -189,6 +191,13 @@ public class PlayerHandler {//Todo: fix player skills not loading properly
 
     public boolean isOnCooldown() {
         return getAtkCooldown()>0;
+    }
+
+    private boolean duplicateRightClick = false;
+    public boolean checkForDuplicateRightClick(PlayerInteractEvent event) {
+        if(event.getAction() != Action.RIGHT_CLICK_BLOCK) return false;
+        duplicateRightClick = !duplicateRightClick;
+        return !duplicateRightClick;
     }
 
     private static class FallDamageCheckTask implements Runnable{
