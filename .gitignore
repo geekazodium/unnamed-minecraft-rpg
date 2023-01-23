@@ -1,0 +1,21 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+
+.idea/*
+gradle/*
+.gradle/*
+run/logs/*
+run/libraries/*
+run/cache/*
+run/versions/*
+run/plugins/LibsDisguises/SavedSkins
+run/plugins/LibsDisguises/Skins
+run/usercache.json
+run/help.yml
+run/version_history.json
+run/*/session.lock
+run/*/uid.*
+run/*
+**1.18.2.jar
+.idea/workspace.xml
