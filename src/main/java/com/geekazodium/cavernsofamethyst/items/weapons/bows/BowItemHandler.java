@@ -17,18 +17,21 @@ public abstract class BowItemHandler extends WeaponItemHandler {
     //public static final NamespacedKey damageableEntities = new NamespacedKey(Main.getInstance(),"damageableEntities");
     protected BowItemHandler(int newestVer, String id) {
         super(newestVer, id);
+        actions[0]=(PlayerHandler handler)->{
+            boolean b = handler.consumeMana(1);
+            if(!b)return false;
+            activateNormalAbility(handler);
+            return true;
+        };
     }
 
     @Override
-    public void onLeftClickMainHand(PlayerArmSwingEvent event) {
-        super.onLeftClickMainHand(event);
-        Player player = event.getPlayer();
+    public void useNormalMove(Player player) {
+        super.useNormalMove(player);
         playBowAnimation(player);
         Location eyeLocation = player.getEyeLocation();
         PersistentDataContainer container = player.getPersistentDataContainer();
         spawnArrow(player, eyeLocation, eyeLocation.getDirection(), container);
-        //NonArrowHitboxProjectile projectile = new NonArrowHitboxProjectile(player, eyeLocation, eyeLocation.getDirection().multiply(3),container);
-        //GameTickHandler.getInstance().overworldProjectileHandler.addTickingProjectile(projectile);
     }
 
     protected void spawnArrow(Player player, Location eyeLocation, Vector direction, PersistentDataContainer container) {
@@ -42,11 +45,7 @@ public abstract class BowItemHandler extends WeaponItemHandler {
         player.getWorld().playSound(player.getEyeLocation(), Sound.ENTITY_ARROW_SHOOT,1,1);
     }
 
-    @Override
     public void activateNormalAbility(PlayerHandler player) {
-        if(!player.consumeMana(1)){
-            return;
-        }
         //player.increaseElementalCharge(1);
         player.scheduleAction(new normalAbility(this,player,player.getPlayer().getPersistentDataContainer()),1);
     }
@@ -77,6 +76,4 @@ public abstract class BowItemHandler extends WeaponItemHandler {
             }
         }
     }
-    @Override
-    public void activateSuperchargedAbility(PlayerHandler player) {}
 }

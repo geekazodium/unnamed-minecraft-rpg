@@ -10,6 +10,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
+import java.util.HashMap;
+
 import static com.geekazodium.cavernsofamethyst.GameTickHandler.getPlayerHandler;
 
 //import static com.geekazodium.cavernsofamethyst.GameTickHandler.playersAttackCooldown;
@@ -17,6 +19,12 @@ import static com.geekazodium.cavernsofamethyst.GameTickHandler.getPlayerHandler
 public abstract class WeaponItemHandler extends CustomItemHandler {
     //public static final NamespacedKey PLAYER_ELEMENTAL_CHARGE = new NamespacedKey(Main.getInstance(),"elemental_charge");
     protected int attackDelayTier = 4;
+
+    protected final SpecialAction[] actions = new SpecialAction[7];
+
+    public SpecialAction getSpecialAction(int id){
+        return actions[id];
+    }
 
     protected WeaponItemHandler(int newestVer, String id) {
         super(newestVer, id);
@@ -26,22 +34,12 @@ public abstract class WeaponItemHandler extends CustomItemHandler {
     }
 
     @Override
-    public void onLeftClickMainHand(PlayerArmSwingEvent event) {
-        Player player = event.getPlayer();
-        setPlayerAttackCooldown(player);
+    public final void onLeftClickMainHand(PlayerArmSwingEvent event) {
+        useNormalMove(event.getPlayer());
     }
 
     @Override
-    public void onRightClickMainHand(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        //@NotNull ItemStack item = player.getInventory().getItemInMainHand();
-        PlayerHandler playerHandler = GameTickHandler.getPlayerHandler(player);
-        if(playerHandler.elementalCharge() >= elementalChargeReq()){
-            activateSuperchargedAbility(playerHandler);
-            playerHandler.consumeElementalCharge(elementalChargeReq());
-        }else{
-            activateNormalAbility(playerHandler);
-        }
+    public final void onRightClickMainHand(PlayerInteractEvent event) {
     }
 
     public void setPlayerAttackCooldown(Player player){
@@ -52,9 +50,7 @@ public abstract class WeaponItemHandler extends CustomItemHandler {
                 Math.max(0, getPlayerHandler(player).getAtkCooldown())
         );
     }
-    public abstract void activateNormalAbility(PlayerHandler player);
-
-    public abstract void activateSuperchargedAbility(PlayerHandler player);
+    //public abstract void activateNormalAbility(PlayerHandler player);
 
     public int fireBaseDamage(){
         return 0;
@@ -76,4 +72,18 @@ public abstract class WeaponItemHandler extends CustomItemHandler {
     }
 
     public int elementalChargeReq(){return Integer.MAX_VALUE;}
+
+    public void useNormalMove(Player player){
+        setPlayerAttackCooldown(player);
+    }
+    public void useSpecialAction(Player player,int i) {
+        SpecialAction action = actions[i];
+        if(action == null) return;
+        action.use(GameTickHandler.getPlayerHandler(player));
+    }
+
+    @FunctionalInterface
+    public interface SpecialAction{
+        boolean use(PlayerHandler playerHandler);
+    }
 }

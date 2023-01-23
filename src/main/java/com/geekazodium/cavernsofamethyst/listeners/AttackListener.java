@@ -4,16 +4,17 @@ import com.destroystokyo.paper.event.entity.ProjectileCollideEvent;
 import com.geekazodium.cavernsofamethyst.GameTickHandler;
 import com.geekazodium.cavernsofamethyst.items.CustomItemHandler;
 import com.geekazodium.cavernsofamethyst.items.CustomItemHandlerRegistry;
+import com.geekazodium.cavernsofamethyst.items.weapons.WeaponItemHandler;
 import com.geekazodium.cavernsofamethyst.util.EntityDamageUtil;
 import com.geekazodium.cavernsofamethyst.players.PlayerHandler;
 import io.papermc.paper.event.player.PlayerArmSwingEvent;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -22,9 +23,6 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.projectiles.ProjectileSource;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static com.geekazodium.cavernsofamethyst.entities.npc.PlayerNPC.isNPCKey;
 
 public class AttackListener implements Listener {
@@ -32,17 +30,64 @@ public class AttackListener implements Listener {
     @EventHandler
     public void onEvent(PlayerArmSwingEvent event){
         Player player = event.getPlayer();
-        PlayerInventory inventory = player.getInventory();
-        ItemStack itemInMainHand = inventory.getItemInMainHand();
-        if(itemInMainHand == null)return;
-        CustomItemHandler customItemHandler = CustomItemHandlerRegistry.get(itemInMainHand);
-        if(customItemHandler!=null){
-            event.setCancelled(true);
-            if(!GameTickHandler.getPlayerHandler(player).isOnCooldown()) {
-                customItemHandler.onLeftClickMainHand(event);
-            }
+        PlayerHandler playerHandler = GameTickHandler.getPlayerHandler(player);
+        ItemStack activeItemStack = playerHandler.getActiveItemStack();
+        CustomItemHandler itemHandler = CustomItemHandlerRegistry.get(activeItemStack);
+        if (itemHandler == null)return;
+        if(itemHandler instanceof WeaponItemHandler) deferToWeaponLeftClick(playerHandler,itemHandler,event);
+        else {
+            if(playerHandler.isOnCooldown())return;
+            itemHandler.onLeftClickMainHand(event);
         }
+        event.setCancelled(true);
+//        if(itemInMainHand == null)return;
+//        CustomItemHandler customItemHandler = CustomItemHandlerRegistry.get(itemInMainHand);
+//        if(playerHandler.isWeaponActive()||customItemHandler instanceof WeaponItemHandler){
+//            deferToWeaponLeftClick(playerHandler,customItemHandler,event);
+//            return;
+//        }
+//        if(customItemHandler==null)return;
+//        event.setCancelled(true);
+//        if(!playerHandler.isOnCooldown()) {
+//            customItemHandler.onLeftClickMainHand(event);
+//        }
     }
+    @EventHandler
+    public void onEvent(PlayerInteractEvent event){
+        PlayerHandler playerHandler = GameTickHandler.getPlayerHandler(event.getPlayer());
+        if(playerHandler.checkForDuplicateRightClick(event)) return;
+        ItemStack activeItem = playerHandler.getActiveItemStack();
+        CustomItemHandler itemHandler = CustomItemHandlerRegistry.get(activeItem);
+        if(itemHandler==null)return;
+        if(!event.getAction().isRightClick())return;
+        if(itemHandler instanceof WeaponItemHandler) return;
+        else itemHandler.onRightClickMainHand(event);
+        event.setCancelled(true);
+//        if(itemInMainHand == null)return;
+//        if(!event.getAction().isRightClick())return;
+//        CustomItemHandler customItemHandler = CustomItemHandlerRegistry.get(itemInMainHand);
+//        if(playerHandler.isWeaponActive()||customItemHandler instanceof WeaponItemHandler){
+//            deferToWeaponRightClick(playerHandler,customItemHandler,event);
+//            return;
+//        }
+//        if(customItemHandler==null)return;
+//        event.setCancelled(true);
+//        customItemHandler.onRightClickMainHand(event);
+    }
+
+    private void deferToWeaponLeftClick(PlayerHandler playerHandler, CustomItemHandler customItemHandler,PlayerArmSwingEvent event){
+        event.setCancelled(true);
+        if(playerHandler.isWeaponActive()){
+            ItemStack item = playerHandler.getPlayer().getInventory().getItemInMainHand();
+            if(item.getType() == Material.BARRIER){
+                playerHandler.lowerWeapon();
+                return;
+            }
+            if(customItemHandler!=null && !playerHandler.isOnCooldown()) customItemHandler.onLeftClickMainHand(event);
+        }
+        playerHandler.readyWeapon();
+    }
+
     @EventHandler
     public void onEvent(EntityDamageByEntityEvent event) {
         Entity damager = event.getDamager();
@@ -55,7 +100,7 @@ public class AttackListener implements Listener {
             if(victim instanceof Player){
                 event.setCancelled(true);
             }
-            if (CustomItemHandlerRegistry.get(player.getInventory().getItemInMainHand()) != null) {
+            if (CustomItemHandlerRegistry.get(GameTickHandler.getPlayerHandler(player).getActiveItemStack()) != null) {
                 event.setCancelled(true);
             }
         }else{
@@ -88,20 +133,6 @@ public class AttackListener implements Listener {
                 EntityDamageUtil.onPlayerProjectileDamageEntity(player, projectile.getPersistentDataContainer(), livingEntity);
                 projectile.remove();
             }
-        }
-    }
-    @EventHandler
-    public void onEvent(PlayerInteractEvent event){
-        PlayerInventory inventory = event.getPlayer().getInventory();
-        ItemStack itemInMainHand = inventory.getItemInMainHand();
-        PlayerHandler playerHandler = GameTickHandler.getPlayerHandler(event.getPlayer());
-        if(playerHandler.checkForDuplicateRightClick(event)) return;
-        if(itemInMainHand == null)return;
-        if(!event.getAction().isRightClick())return;
-        CustomItemHandler customItemHandler = CustomItemHandlerRegistry.get(itemInMainHand);
-        if(customItemHandler!=null){
-            event.setCancelled(true);
-            customItemHandler.onRightClickMainHand(event);
         }
     }
     @EventHandler

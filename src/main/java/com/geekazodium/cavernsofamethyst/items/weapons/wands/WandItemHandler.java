@@ -32,15 +32,20 @@ public abstract class WandItemHandler extends WeaponItemHandler {
     }
     protected WandItemHandler(int newestVer, String id) {
         super(newestVer, id);
+        actions[0]=(PlayerHandler handler)->{
+            boolean b = handler.consumeMana(1);
+            if(!b)return false;
+            activateNormalAbility(handler);
+            return true;
+        };
     }
 
     @Override
-    public void onLeftClickMainHand(PlayerArmSwingEvent event) {
-        super.onLeftClickMainHand(event);
-        Player player = event.getPlayer();
+    public void useNormalMove(Player player) {
+        super.useNormalMove(player);
         playWandAnimation(player);
         HashMap<Entity, Integer> collidedWith = HitboxCollisionUtil.getCollidedWith(
-                event.getPlayer().getEyeLocation(),
+                player.getEyeLocation(),
                 hitboxes,
                 List.of(player),
                 15,15,15
@@ -66,11 +71,7 @@ public abstract class WandItemHandler extends WeaponItemHandler {
         );
     }
 
-    @Override
     public void activateNormalAbility(PlayerHandler player) {
-        if(!player.consumeMana(1)){
-            return;
-        }
         Player p = player.getPlayer();
         p.getLocation().getWorld().playSound(p.getLocation(),Sound.BLOCK_DISPENSER_LAUNCH,1,1);
         p.getLocation().getWorld().playSound(p.getLocation(),Sound.ENTITY_FIREWORK_ROCKET_LAUNCH,1,0);
@@ -81,6 +82,4 @@ public abstract class WandItemHandler extends WeaponItemHandler {
                 this
         ));
     }
-    @Override
-    public void activateSuperchargedAbility(PlayerHandler player) {}
 }

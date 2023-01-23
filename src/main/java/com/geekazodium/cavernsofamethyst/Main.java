@@ -1,5 +1,11 @@
 package com.geekazodium.cavernsofamethyst;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.ListenerPriority;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketEvent;
 import com.geekazodium.cavernsofamethyst.commands.*;
 import com.geekazodium.cavernsofamethyst.items.armor.helmet.LeatherCap;
 import com.geekazodium.cavernsofamethyst.items.weapons.bows.TripleShot;
@@ -7,6 +13,7 @@ import com.geekazodium.cavernsofamethyst.items.weapons.bows.WoodenBow;
 import com.geekazodium.cavernsofamethyst.items.weapons.swords.WarmBlade;
 import com.geekazodium.cavernsofamethyst.items.weapons.wands.Icicle;
 import com.geekazodium.cavernsofamethyst.listeners.*;
+import com.geekazodium.cavernsofamethyst.players.PlayerHandler;
 import com.google.j2objc.annotations.ReflectionSupport;
 import org.bukkit.GameRule;
 import org.bukkit.NamespacedKey;
@@ -54,6 +61,7 @@ public class Main extends JavaPlugin {
         LOGGER = getLogger();
         registerListeners("com.geekazodium.cavernsofamethyst.listeners");
         registerCommandListeners();
+        registerProtocolListeners();
         setGameSettings();
         new WarmBlade().register();
         new WoodenBow().register();
@@ -82,6 +90,43 @@ public class Main extends JavaPlugin {
                 LOGGER.warning(e.getMessage());
             }
         }
+    }
+
+    private void registerProtocolListeners(){
+        ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
+        protocolManager.addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Server.SET_SLOT) {
+            @Override
+            public void onPacketSending(PacketEvent event) {
+                PlayerHandler playerHandler = GameTickHandler.getPlayerHandler(event.getPlayer());
+                if(playerHandler.isWeaponActive()){
+                    event.setCancelled(true);
+                    return;
+                }
+                event.getPlayer().sendMessage(event.getPacket().toString());
+            }
+        });
+        protocolManager.addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Server.WINDOW_ITEMS) {
+            @Override
+            public void onPacketSending(PacketEvent event) {
+                PlayerHandler playerHandler = GameTickHandler.getPlayerHandler(event.getPlayer());
+                if(playerHandler.isWeaponActive()){
+                    event.setCancelled(true);
+                    return;
+                }
+                event.getPlayer().sendMessage(event.getPacket().toString());
+            }
+        });
+        protocolManager.addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Server.WINDOW_DATA) {
+            @Override
+            public void onPacketSending(PacketEvent event) {
+                PlayerHandler playerHandler = GameTickHandler.getPlayerHandler(event.getPlayer());
+                if(playerHandler.isWeaponActive()){
+                    event.setCancelled(true);
+                    return;
+                }
+                event.getPlayer().sendMessage(event.getPacket().toString());
+            }
+        });
     }
 
     private void registerCommandListeners(){

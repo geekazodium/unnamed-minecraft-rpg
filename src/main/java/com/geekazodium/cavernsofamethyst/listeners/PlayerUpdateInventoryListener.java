@@ -5,10 +5,15 @@ import com.geekazodium.cavernsofamethyst.Main;
 import com.geekazodium.cavernsofamethyst.items.CustomItemHandler;
 import com.geekazodium.cavernsofamethyst.items.CustomItemHandlerRegistry;
 import com.geekazodium.cavernsofamethyst.items.weapons.WeaponItemHandler;
+import com.geekazodium.cavernsofamethyst.players.PlayerHandler;
+import net.minecraft.util.profiling.jfr.event.PacketEvent;
+import net.minecraft.util.profiling.jfr.event.PacketSentEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -31,7 +36,12 @@ public class PlayerUpdateInventoryListener implements Listener {
 
     @EventHandler
     public void onEvent(PlayerItemHeldEvent event){
-        updatePlayer(event.getPlayer());
+        PlayerHandler playerHandler = GameTickHandler.getPlayerHandler(event.getPlayer());
+        if(playerHandler.isWeaponActive()){
+            playerHandler.onWeaponHotKeyEvent(event);
+            event.setCancelled(true);
+        }
+        else updatePlayer(event.getPlayer());
     }
 
     @EventHandler
@@ -47,9 +57,10 @@ public class PlayerUpdateInventoryListener implements Listener {
 
         @Override
         public void run() {
-            GameTickHandler.players.get(player).updateStats();
+            PlayerHandler playerHandler = GameTickHandler.getPlayerHandler(player);
+            playerHandler.updateStats();
             CustomItemHandler itemHandler = CustomItemHandlerRegistry.get(player.getInventory().getItem(EquipmentSlot.HAND));
-            if(itemHandler instanceof WeaponItemHandler weapon){
+            if(itemHandler instanceof WeaponItemHandler weapon) {
                 weapon.setPlayerAttackCooldown(player);
             }
         }

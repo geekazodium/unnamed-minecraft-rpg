@@ -3,21 +3,36 @@ package com.geekazodium.cavernsofamethyst.players;
 import com.geekazodium.cavernsofamethyst.Main;
 import com.geekazodium.cavernsofamethyst.items.CustomItemHandler;
 import com.geekazodium.cavernsofamethyst.items.CustomItemHandlerRegistry;
+import com.geekazodium.cavernsofamethyst.items.weapons.WeaponItemHandler;
 import com.geekazodium.cavernsofamethyst.quests.CutsceneHandler;
 import com.geekazodium.cavernsofamethyst.quests.PlayerQuestDataUtil;
 import com.geekazodium.cavernsofamethyst.soundtracks.PlayerMusicHandler;
 import com.geekazodium.cavernsofamethyst.util.EntityDamageUtil;
+import com.geekazodium.cavernsofamethyst.util.NMS_accessor.NMSItemStackAccessor;
 import com.geekazodium.cavernsofamethyst.util.RandomUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.DyeItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.BarrierBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftInventoryPlayer;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -32,6 +47,7 @@ import java.util.*;
 import static com.geekazodium.cavernsofamethyst.listeners.EntityInteractListener.playerInteractNpcCooldown;
 import static com.geekazodium.cavernsofamethyst.util.EntityDamageUtil.BASE_ATTACK_KEY;
 import static com.geekazodium.cavernsofamethyst.util.EntityDamageUtil.EFFECTIVE_ATTACK_KEY;
+import static com.geekazodium.cavernsofamethyst.util.NMS_accessor.NMSItemStackAccessor.fromItemStack;
 import static org.bukkit.inventory.EquipmentSlot.*;
 
 public class PlayerHandler {//Todo: fix player skills not loading properly
@@ -111,6 +127,56 @@ public class PlayerHandler {//Todo: fix player skills not loading properly
         scheduleAction(playerFallCheckTask,1);
         this.playerMusicHandler= new PlayerMusicHandler(player);
     }
+    private boolean isWeaponActive;
+    private ItemStack activeWeaponItemStack;
+    public boolean isWeaponActive(){
+        return isWeaponActive;
+    }
+    public void lowerWeapon() {
+        if(!isWeaponActive())return;
+        PlayerInventory playerInventory = player.getInventory();
+        ItemStack item = playerInventory.getItem(0);
+        if (item!=null&&item.getType().equals(Material.STRUCTURE_VOID)){
+            playerInventory.remove(item);
+        }
+        isWeaponActive = false;
+        player.playSound(player,Sound.ITEM_ARMOR_EQUIP_IRON,1,1);
+    }
+
+    private void sendVisualOnlyItemPacket(int slot, NMSItemStackAccessor itemStack){
+        Connection networkManager = ((CraftPlayer) player).getHandle().networkManager;
+        ClientboundContainerSetSlotPacket packet = new ClientboundContainerSetSlotPacket(-2,0,slot,itemStack.getItemStack());
+        networkManager.send(packet);
+    }
+
+    public void readyWeapon() {
+        if(isWeaponActive())return;
+        PlayerInventory playerInventory = player.getInventory();
+        playerInventory.setHeldItemSlot(0);
+        activeWeaponItemStack= playerInventory.getItemInMainHand();
+        Inventory inventory = ((CraftInventoryPlayer) playerInventory).getInventory();
+        NMSItemStackAccessor visualWeaponStack = fromItemStack(inventory.getItem(playerInventory.getHeldItemSlot()));
+        WeaponItemHandler weaponItemHandler = (WeaponItemHandler) CustomItemHandlerRegistry.get(playerInventory.getItemInMainHand());
+        NMSItemStackAccessor ability = new NMSItemStackAccessor(DyeItem.byColor(DyeColor.BLUE),1);
+        NMSItemStackAccessor empty = new NMSItemStackAccessor();
+        sendVisualOnlyItemPacket(0,visualWeaponStack);
+        for (int i = 0; i <7; i++) {
+            assert weaponItemHandler != null;
+            if (weaponItemHandler.getSpecialAction(i)==null){
+                sendVisualOnlyItemPacket(i + 1, empty);
+            }else {
+                sendVisualOnlyItemPacket(i + 1, ability);
+            }
+        }
+        NMSItemStackAccessor barrier = new NMSItemStackAccessor(Items.BARRIER);
+        sendVisualOnlyItemPacket(8, barrier);
+        player.playSound(player,Sound.ITEM_ARMOR_EQUIP_IRON,1,1);
+        isWeaponActive = true;
+        ItemStack item = playerInventory.getItem(0);
+        if(item == null || item.getType().equals(Material.AIR)){
+            playerInventory.setItem(0,new ItemStack(Material.STRUCTURE_VOID));
+        }
+    }
 
     public void updateStats(){
         player.setHealthScaled(true);
@@ -127,6 +193,11 @@ public class PlayerHandler {//Todo: fix player skills not loading properly
         AttributeInstance maxHp = Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH));
         maxHp.setBaseValue(stats.maxHealth);
         player.setHealth(Math.min(maxHp.getValue(),player.getHealth()));
+    }
+
+    public ItemStack getActiveItemStack(){
+        if(isWeaponActive)return activeWeaponItemStack;
+        return player.getInventory().getItemInMainHand();
     }
 
     private void applyStatsFromItem(ItemStack item, PlayerStats stats, EquipmentSlot slot){
@@ -198,6 +269,18 @@ public class PlayerHandler {//Todo: fix player skills not loading properly
         if(event.getAction() != Action.RIGHT_CLICK_BLOCK) return false;
         duplicateRightClick = !duplicateRightClick;
         return !duplicateRightClick;
+    }
+
+    public void onWeaponHotKeyEvent(PlayerItemHeldEvent event) {
+        if(!(CustomItemHandlerRegistry.get(activeWeaponItemStack) instanceof WeaponItemHandler itemHandler))return;
+        int newSlot = event.getNewSlot();
+        if (newSlot == 8) {
+            lowerWeapon();
+        } else if (newSlot == 0) {
+            event.setCancelled(false);
+        }else{
+            itemHandler.useSpecialAction(event.getPlayer(),newSlot-1);
+        }
     }
 
     private static class FallDamageCheckTask implements Runnable{

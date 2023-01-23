@@ -31,15 +31,20 @@ public abstract class SwordItemHandler extends WeaponItemHandler {
     }
     protected SwordItemHandler(int newestVer, String id) {
         super(newestVer, id);
+        actions[0]=(PlayerHandler handler)->{
+            boolean b = handler.consumeMana(1);
+            if(!b)return false;
+            activateNormalAbility(handler);
+            return true;
+        };
     }
 
     @Override
-    public void onLeftClickMainHand(PlayerArmSwingEvent event) {
-        super.onLeftClickMainHand(event);
-        Player player = event.getPlayer();
+    public void useNormalMove(Player player) {
+        super.useNormalMove(player);
         playSwordAnimation(player);
         HashMap<Entity, Integer> collidedWith = HitboxCollisionUtil.getCollidedWith(
-                event.getPlayer().getEyeLocation(),
+                player.getEyeLocation(),
                 hitboxes,
                 List.of(player)
         );
@@ -49,6 +54,7 @@ public abstract class SwordItemHandler extends WeaponItemHandler {
             }
         }
     }
+
     protected void playSwordAnimation(Player player){
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP,1,1);
         Location location = player.getEyeLocation();
@@ -66,11 +72,7 @@ public abstract class SwordItemHandler extends WeaponItemHandler {
         }
     }
 
-    @Override
     public void activateNormalAbility(PlayerHandler player) {
-        if(!player.consumeMana(1)){
-            return;
-        }
         player.getPlayer().getWorld().playSound(player.getPlayer().getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP,1,2);
         player.getPlayer().getWorld().playSound(player.getPlayer().getLocation(), Sound.ENTITY_ARROW_SHOOT,1,1);
         Player p = player.getPlayer();
@@ -166,9 +168,5 @@ public abstract class SwordItemHandler extends WeaponItemHandler {
                 player.spawnParticle(Particle.EXPLOSION_NORMAL,location,1,0,0,0,0);
             });
         }
-    }
-    @Override
-    public void activateSuperchargedAbility(PlayerHandler player) {
-
     }
 }
