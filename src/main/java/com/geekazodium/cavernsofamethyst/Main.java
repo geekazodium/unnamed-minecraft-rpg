@@ -15,6 +15,7 @@ import com.geekazodium.cavernsofamethyst.items.weapons.wands.Icicle;
 import com.geekazodium.cavernsofamethyst.listeners.*;
 import com.geekazodium.cavernsofamethyst.players.PlayerHandler;
 import com.google.j2objc.annotations.ReflectionSupport;
+import net.minecraft.network.protocol.game.ClientboundContainerSetContentPacket;
 import org.bukkit.GameRule;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Server;
@@ -102,7 +103,7 @@ public class Main extends JavaPlugin {
                     event.setCancelled(true);
                     return;
                 }
-                event.getPlayer().sendMessage(event.getPacket().toString());
+                //event.getPlayer().sendMessage(event.getPacket().toString());
             }
         });
         protocolManager.addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Server.WINDOW_ITEMS) {
@@ -113,7 +114,13 @@ public class Main extends JavaPlugin {
                     event.setCancelled(true);
                     return;
                 }
-                event.getPlayer().sendMessage(event.getPacket().toString());
+                //event.getPlayer().sendMessage(event.getPacket().toString());
+                event.getPlayer().sendMessage(event.getPacket().getType().toString());
+                ClientboundContainerSetContentPacket packet = (ClientboundContainerSetContentPacket) event.getPacket().getHandle();
+                event.getPlayer().sendMessage(String.valueOf(packet.getContainerId()));
+                event.getPlayer().sendMessage(String.valueOf(packet.getStateId()));
+                event.getPlayer().sendMessage(String.valueOf(packet.getItems()));
+                event.getPlayer().sendMessage(String.valueOf(packet.getCarriedItem()));
             }
         });
         protocolManager.addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Server.WINDOW_DATA) {
@@ -124,7 +131,7 @@ public class Main extends JavaPlugin {
                     event.setCancelled(true);
                     return;
                 }
-                event.getPlayer().sendMessage(event.getPacket().toString());
+                //event.getPlayer().sendMessage(event.getPacket().toString());
             }
         });
     }

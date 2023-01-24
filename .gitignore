@@ -19,3 +19,5 @@ run/*/uid.*
 run/*
 **1.18.2.jar
 .idea/workspace.xml
+
+build/*
