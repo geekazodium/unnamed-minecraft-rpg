@@ -76,11 +76,6 @@ public class Main extends JavaPlugin {
                 LOGGER.warning(e.getMessage());
             }
         }
-//        new WarmBlade().register();
-//        new WoodenBow().register();
-//        new Icicle().register();
-//        new LeatherCap().register();
-//        new TripleShot().register();
     }
 
     @Override
@@ -107,39 +102,27 @@ public class Main extends JavaPlugin {
             @Override
             public void onPacketSending(PacketEvent event) {
                 PlayerHandler playerHandler = GameTickHandler.getPlayerHandler(event.getPlayer());
-                if(playerHandler.isWeaponActive()){
-                    event.setCancelled(true);
-                    return;
-                }
-                //event.getPlayer().sendMessage(event.getPacket().toString());
+                if(playerHandler.isWeaponActive())event.setCancelled(true);
             }
         });
         protocolManager.addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Server.WINDOW_ITEMS) {
             @Override
             public void onPacketSending(PacketEvent event) {
                 PlayerHandler playerHandler = GameTickHandler.getPlayerHandler(event.getPlayer());
-                if(playerHandler.isWeaponActive()){
-                    event.setCancelled(true);
-                    return;
-                }
-                //event.getPlayer().sendMessage(event.getPacket().toString());
-                event.getPlayer().sendMessage(event.getPacket().getType().toString());
-                ClientboundContainerSetContentPacket packet = (ClientboundContainerSetContentPacket) event.getPacket().getHandle();
-                event.getPlayer().sendMessage(String.valueOf(packet.getContainerId()));
-                event.getPlayer().sendMessage(String.valueOf(packet.getStateId()));
-                event.getPlayer().sendMessage(String.valueOf(packet.getItems()));
-                event.getPlayer().sendMessage(String.valueOf(packet.getCarriedItem()));
+                if(playerHandler.isWeaponActive())event.setCancelled(true);
+//                ClientboundContainerSetContentPacket packet = (ClientboundContainerSetContentPacket) event.getPacket().getHandle();
+//                event.getPlayer().sendMessage(event.getPacket().getType().toString());
+//                event.getPlayer().sendMessage(String.valueOf(packet.getContainerId()));
+//                event.getPlayer().sendMessage(String.valueOf(packet.getStateId()));
+//                event.getPlayer().sendMessage(String.valueOf(packet.getItems()));
+//                event.getPlayer().sendMessage(String.valueOf(packet.getCarriedItem()));
             }
         });
         protocolManager.addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Server.WINDOW_DATA) {
             @Override
             public void onPacketSending(PacketEvent event) {
                 PlayerHandler playerHandler = GameTickHandler.getPlayerHandler(event.getPlayer());
-                if(playerHandler.isWeaponActive()){
-                    event.setCancelled(true);
-                    return;
-                }
-                //event.getPlayer().sendMessage(event.getPacket().toString());
+                if(playerHandler.isWeaponActive())event.setCancelled(true);
             }
         });
     }
