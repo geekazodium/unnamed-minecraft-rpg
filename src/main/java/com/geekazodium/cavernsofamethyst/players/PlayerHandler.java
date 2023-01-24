@@ -161,13 +161,7 @@ public class PlayerHandler {//Todo: fix player skills not loading properly
         inv.add(inventory.getArmor(0));
         inv.addAll(inventory.getContents().subList(9,36));
         inv.addAll(inventory.getContents().subList(0,9));
-        ClientboundContainerSetContentPacket packet =
-                new ClientboundContainerSetContentPacket(
-                        0,
-                        1,
-                        inv,
-                        EMPTY
-                );
+        ClientboundContainerSetContentPacket packet = new ClientboundContainerSetContentPacket(0, 1, inv, EMPTY);
         networkManager.send(packet);
     }
 
@@ -182,9 +176,19 @@ public class PlayerHandler {//Todo: fix player skills not loading properly
         PlayerInventory playerInventory = player.getInventory();
         ItemStack itemInMainHand = playerInventory.getItemInMainHand();
         activeWeaponItemStack = itemInMainHand;
+        WeaponItemHandler weaponItemHandler = (WeaponItemHandler) CustomItemHandlerRegistry.get(itemInMainHand);
+        sendVisualOnlyWeaponHotbar(playerInventory, weaponItemHandler);
+        player.playSound(player,Sound.ITEM_ARMOR_EQUIP_IRON,1,1);
+        isWeaponActive = true;
+        ItemStack item = playerInventory.getItem(0);
+        if(item == null || item.getType().equals(Material.AIR)){
+            playerInventory.setItem(0,new ItemStack(Material.STRUCTURE_VOID));
+        }
+    }
+
+    private void sendVisualOnlyWeaponHotbar(PlayerInventory playerInventory, WeaponItemHandler weaponItemHandler) {
         Inventory inventory = ((CraftInventoryPlayer) playerInventory).getInventory();
         NMSItemStackAccessor visualWeaponStack = fromItemStack(inventory.getItem(playerInventory.getHeldItemSlot()));
-        WeaponItemHandler weaponItemHandler = (WeaponItemHandler) CustomItemHandlerRegistry.get(itemInMainHand);
         NMSItemStackAccessor ability = new NMSItemStackAccessor(DyeItem.byColor(DyeColor.BLUE),1);
         NMSItemStackAccessor empty = new NMSItemStackAccessor();
         sendVisualOnlyItemPacket(0,visualWeaponStack);
@@ -198,13 +202,7 @@ public class PlayerHandler {//Todo: fix player skills not loading properly
         }
         NMSItemStackAccessor barrier = new NMSItemStackAccessor(Items.BARRIER);
         sendVisualOnlyItemPacket(8, barrier);
-        player.playSound(player,Sound.ITEM_ARMOR_EQUIP_IRON,1,1);
         playerInventory.setHeldItemSlot(0);
-        isWeaponActive = true;
-        ItemStack item = playerInventory.getItem(0);
-        if(item == null || item.getType().equals(Material.AIR)){
-            playerInventory.setItem(0,new ItemStack(Material.STRUCTURE_VOID));
-        }
     }
 
     public void updateStats(){

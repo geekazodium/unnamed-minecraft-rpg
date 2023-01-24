@@ -9,6 +9,10 @@
       description: gives sender a custom item
       permission: operator
       permission-message: you do not have the permissions to use this command
+    getItemList:
+      description: gives sender a list of custom items
+      permission: operator
+      permission-message: you do not have the permissions to use this command
     debugHitbox:
       description: shows hitboxes to players
       permission: operator

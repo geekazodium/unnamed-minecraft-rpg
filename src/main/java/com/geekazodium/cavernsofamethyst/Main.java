@@ -7,14 +7,8 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.geekazodium.cavernsofamethyst.commands.*;
-import com.geekazodium.cavernsofamethyst.items.armor.helmet.LeatherCap;
-import com.geekazodium.cavernsofamethyst.items.weapons.bows.TripleShot;
-import com.geekazodium.cavernsofamethyst.items.weapons.bows.WoodenBow;
-import com.geekazodium.cavernsofamethyst.items.weapons.swords.WarmBlade;
-import com.geekazodium.cavernsofamethyst.items.weapons.wands.Icicle;
-import com.geekazodium.cavernsofamethyst.listeners.*;
+import com.geekazodium.cavernsofamethyst.items.CustomItemHandler;
 import com.geekazodium.cavernsofamethyst.players.PlayerHandler;
-import com.google.j2objc.annotations.ReflectionSupport;
 import net.minecraft.network.protocol.game.ClientboundContainerSetContentPacket;
 import org.bukkit.GameRule;
 import org.bukkit.NamespacedKey;
@@ -64,15 +58,29 @@ public class Main extends JavaPlugin {
         registerCommandListeners();
         registerProtocolListeners();
         setGameSettings();
-        new WarmBlade().register();
-        new WoodenBow().register();
-        new Icicle().register();
-        new LeatherCap().register();
-        new TripleShot().register();
+        registerCustomItemHandlers("com.geekazodium.cavernsofamethyst.items");
         tickHandler = new GameTickHandler();
         minecraftServer.getScheduler().scheduleSyncDelayedTask(this, tickHandler,1);
         LOGGER.log(Level.INFO,"caverns of amethyst has been successfully loaded");
         //minecraftServer.getScheduler().scheduleSyncDelayedTask(this,,1);
+    }
+
+    private static void registerCustomItemHandlers(String path) {
+        Reflections reflections = new Reflections(path);
+        Set<Class<? extends CustomItemHandler>> itemHandlerClasses = reflections.getSubTypesOf(CustomItemHandler.class);
+        for (Class<? extends CustomItemHandler> itemHandlerClass : itemHandlerClasses) {
+            try {
+                itemHandlerClass.getDeclaredConstructor().newInstance().register();
+            } catch (InstantiationException | IllegalAccessException |
+                     InvocationTargetException | NoSuchMethodException e) {
+                LOGGER.warning(e.getMessage());
+            }
+        }
+//        new WarmBlade().register();
+//        new WoodenBow().register();
+//        new Icicle().register();
+//        new LeatherCap().register();
+//        new TripleShot().register();
     }
 
     @Override
@@ -138,6 +146,7 @@ public class Main extends JavaPlugin {
 
     private void registerCommandListeners(){
         minecraftServer.getPluginCommand("getItem").setExecutor(new GetItemCommand());
+        minecraftServer.getPluginCommand("getItemList").setExecutor(new GetItemListCommand());
         minecraftServer.getPluginCommand("setSkin").setExecutor(new SetSkinCommand());
         minecraftServer.getPluginCommand("skillMenu").setExecutor(new SkillMenuCommand());
         minecraftServer.getPluginCommand("setMaxHealth").setExecutor(new SetHealthCommand());

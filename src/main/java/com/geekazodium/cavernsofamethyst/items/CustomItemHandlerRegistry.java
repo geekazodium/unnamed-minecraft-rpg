@@ -9,7 +9,9 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
+import java.util.TreeSet;
 
 public class CustomItemHandlerRegistry {
     private static final HashMap<String, CustomItemHandler> itemHandlers = new HashMap<>();
@@ -28,6 +30,10 @@ public class CustomItemHandlerRegistry {
 
     public static void register(String id, CustomItemHandler customItemHandler){
         itemHandlers.put(id,customItemHandler);
+    }
+
+    public static TreeSet<String> getKeySet(){
+        return new TreeSet<>(itemHandlers.keySet());
     }
 
     public static CustomItemHandler getFromId(String id) {
