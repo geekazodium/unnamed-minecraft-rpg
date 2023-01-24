@@ -33,7 +33,7 @@ public abstract class WandItemHandler extends WeaponItemHandler {
     protected WandItemHandler(int newestVer, String id) {
         super(newestVer, id);
         actions[0]=(PlayerHandler handler)->{
-            boolean b = handler.consumeMana(1);
+            boolean b = handler.consumeMana(1,this,0);
             if(!b)return false;
             activateNormalAbility(handler);
             return true;

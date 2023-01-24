@@ -18,7 +18,7 @@ public abstract class BowItemHandler extends WeaponItemHandler {
     protected BowItemHandler(int newestVer, String id) {
         super(newestVer, id);
         actions[0]=(PlayerHandler handler)->{
-            boolean b = handler.consumeMana(1);
+            boolean b = handler.consumeMana(1,this,0);
             if(!b)return false;
             activateNormalAbility(handler);
             return true;
@@ -64,11 +64,12 @@ public abstract class BowItemHandler extends WeaponItemHandler {
         @Override
         public void run() {
             Player p = player.getPlayer();
-            Location eyeLocation = p.getEyeLocation();
-            Arrow arrow = eyeLocation.getWorld().spawnArrow(eyeLocation,eyeLocation.getDirection(),4,2);
-            arrow.setPersistent(false);
-            arrow.setShooter(p);
-            copyPlayerWeaponDataToProjectile(container, arrow,handler);
+//            Location eyeLocation = p.getEyeLocation();
+//            Arrow arrow = eyeLocation.getWorld().spawnArrow(eyeLocation,eyeLocation.getDirection(),4,2);
+//            arrow.setPersistent(false);
+//            arrow.setShooter(p);
+//            copyPlayerWeaponDataToProjectile(container, arrow,handler);
+            handler.useNormalMove(p);
             p.getWorld().playSound(p.getLocation(),Sound.ENTITY_ARROW_SHOOT, 2,1.5f);
             rep -= 1;
             if(rep>0){

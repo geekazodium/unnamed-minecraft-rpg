@@ -13,6 +13,8 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -32,7 +34,7 @@ public abstract class SwordItemHandler extends WeaponItemHandler {
     protected SwordItemHandler(int newestVer, String id) {
         super(newestVer, id);
         actions[0]=(PlayerHandler handler)->{
-            boolean b = handler.consumeMana(1);
+            boolean b = handler.consumeMana(1,this,0);
             if(!b)return false;
             activateNormalAbility(handler);
             return true;
@@ -90,14 +92,14 @@ public abstract class SwordItemHandler extends WeaponItemHandler {
             dashHitboxes.add(new Hitbox(
                     new Vector(0,0,0),
                     new Vector(0.5,0.5,0),
-                    new Vector(3,3,3),
+                    new Vector(4,4,3),
                     Quaternion.ONE,
                     (byte)1
             ));
             triggerHitboxes.add(new Hitbox(
                     new Vector(0,0,0),
                     new Vector(0.5,0.5,0),
-                    new Vector(1.5,3,1.5),
+                    new Vector(3,3.5,1.5),
                     Quaternion.ONE,
                     (byte)1
             ));
@@ -144,8 +146,9 @@ public abstract class SwordItemHandler extends WeaponItemHandler {
                 for (Entity entity:collidedWith.keySet()) {
                     if(entity instanceof LivingEntity livingEntity){
                         swordItemHandler.onDamageHit(player,livingEntity,swordItemHandler);
-                        Vector velocity = livingEntity.getVelocity().clone().add(new Vector(0,0.5,0));
-                        livingEntity.setVelocity(velocity.add(player.getVelocity().normalize()));
+                        Vector velocity = new Vector(0,0.70,0);
+                        livingEntity.setVelocity(velocity.add(player.getEyeLocation().getDirection().setY(0).normalize().multiply(1)));
+                        ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING,20,1));
                     }
                 }
                 player.setVelocity(new Vector(0, 0.2, 0)

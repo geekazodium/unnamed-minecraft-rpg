@@ -21,7 +21,7 @@ public abstract class MobBehavior {
     int entityCap;
     protected List<LivingEntity> entities;
     protected int spawnDelay = 40;
-    private int spawnTick = 0;
+    protected int spawnTick = 0;
     protected HashMap<LivingEntity, Hologram> labels;
     protected final Location center;
     protected final double spawnRadius;

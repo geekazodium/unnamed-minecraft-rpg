@@ -357,6 +357,10 @@ public class PlayerHandler {//Todo: fix player skills not loading properly
     }
 
     private void updateVolatileStats() {
+        if(multiplierTimer>0)multiplierTimer--;
+        else {
+            lastHandler=null;
+        }
         PersistentDataContainer container = player.getPersistentDataContainer();
         container.set(EFFECTIVE_ATTACK_KEY,PersistentDataType.INTEGER,container.getOrDefault(BASE_ATTACK_KEY,PersistentDataType.INTEGER,0));
         if(timeUntilNextRegenTick>0){
@@ -438,12 +442,34 @@ public class PlayerHandler {//Todo: fix player skills not loading properly
         elementalCharge += Math.max(0,i);
     }
 
-    public boolean consumeMana(int i) {
-        if(mana>=i){
-            mana -= i;
+    CustomItemHandler lastHandler;
+    int lastId;
+    int spellCostMultiplier=1;
+    int multiplierTimer = 0;
+
+    public boolean consumeMana(int i,CustomItemHandler handler,int id) {
+        if(isRepeatedSpell(handler,id)){
+            spellCostMultiplier++;
+        }else{
+            spellCostMultiplier=1;
+        }
+        int cost = i * Math.max(spellCostMultiplier, 1);
+        if(mana>= cost){
+            multiplierTimer = 60;
+            mana -= cost;
+            player.sendMessage("[-"+cost+"]mana");
+            lastHandler=handler;
+            lastId=id;
             return true;
         }
+        if(isRepeatedSpell(handler,id)){
+            spellCostMultiplier--;
+        }
         return false;
+    }
+
+    private boolean isRepeatedSpell(CustomItemHandler handler, int id) {
+        return handler == lastHandler && id == lastId;
     }
 
     public void scheduleAction(Runnable runnable,int delay) {
