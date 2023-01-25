@@ -1,5 +1,6 @@
 package com.geekazodium.cavernsofamethyst.listeners;
 
+import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import com.geekazodium.cavernsofamethyst.GameTickHandler;
 import com.geekazodium.cavernsofamethyst.Main;
 import com.geekazodium.cavernsofamethyst.items.CustomItemHandler;
@@ -32,6 +33,11 @@ public class PlayerUpdateInventoryListener implements Listener {
                 updatePlayer(player);
             }
         });
+    }
+
+    @EventHandler
+    public void onEvent(PlayerArmorChangeEvent event){
+        updatePlayer(event.getPlayer());
     }
 
     @EventHandler

@@ -17,6 +17,7 @@ run/version_history.json
 run/*/session.lock
 run/*/uid.*
 run/plugins/FastAsyncWorldEdit/history/world/*
+run/plugins/FastAsyncWorldEdit/clipboard/*
 run/world_nether
 run/world_the_end
 
