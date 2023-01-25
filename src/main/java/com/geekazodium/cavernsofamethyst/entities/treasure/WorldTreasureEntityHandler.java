@@ -1,11 +1,17 @@
 package com.geekazodium.cavernsofamethyst.entities.treasure;
 
+import com.geekazodium.cavernsofamethyst.GameTickHandler;
 import com.geekazodium.cavernsofamethyst.Main;
+import com.geekazodium.cavernsofamethyst.items.CustomItemHandler;
+import com.geekazodium.cavernsofamethyst.items.CustomItemHandlerRegistry;
+import com.geekazodium.cavernsofamethyst.items.weapons.WeaponItemHandler;
+import com.geekazodium.cavernsofamethyst.players.PlayerHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -57,22 +63,22 @@ public class WorldTreasureEntityHandler implements Listener {
     @EventHandler
     public void onEvent(PlayerInteractEvent event){
         Block clickedBlock = event.getClickedBlock();
-        if(clickedBlock ==null){
-            return;
-        }
+        if(clickedBlock ==null)return;
         TreasureEntity treasureEntity = treasureEntityLocations.get(event.getClickedBlock().getLocation());
-        if(treasureEntity == null){
-            return;
-        }
+        if(treasureEntity == null)return;
         if(event.getAction()== Action.RIGHT_CLICK_BLOCK) {
             event.setCancelled(true);
-        }else {
-            return;
+        }else return;
+        Player player = event.getPlayer();
+        if(!treasureEntity.canInteract(player))return;
+        PlayerHandler playerHandler = GameTickHandler.getPlayerHandler(player);
+        if(playerHandler.isWeaponActive())playerHandler.setAllowSendInventoryUpdatePacket(true);
+        treasureEntity.interact(player);
+        if(playerHandler.isWeaponActive()) {
+            WeaponItemHandler handler = (WeaponItemHandler) CustomItemHandlerRegistry.get(playerHandler.getActiveItemStack());
+            playerHandler.sendVisualOnlyWeaponHotbar(player.getInventory(),handler);
+            playerHandler.setAllowSendInventoryUpdatePacket(false);
         }
-        if(!treasureEntity.canInteract(event.getPlayer())){
-            return;
-        }
-        treasureEntity.interact(event.getPlayer());
     }
     @EventHandler
     public void onLoadChunk(ChunkLoadEvent event){

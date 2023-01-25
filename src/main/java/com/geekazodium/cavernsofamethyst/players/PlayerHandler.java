@@ -133,9 +133,16 @@ public class PlayerHandler {//Todo: fix player skills not loading properly
         this.playerMusicHandler= new PlayerMusicHandler(player);
     }
     private boolean isWeaponActive;
+    private boolean allowSendInventoryUpdatePacket;
     private ItemStack activeWeaponItemStack;
     public boolean isWeaponActive(){
         return isWeaponActive;
+    }
+    public boolean isAllowSendInventoryUpdatePacket(){
+        return allowSendInventoryUpdatePacket;
+    }
+    public void setAllowSendInventoryUpdatePacket(boolean b){
+        allowSendInventoryUpdatePacket = b;
     }
     public void lowerWeapon() {
         if(!isWeaponActive())return;
@@ -145,6 +152,7 @@ public class PlayerHandler {//Todo: fix player skills not loading properly
             playerInventory.remove(item);
         }
         isWeaponActive = false;
+        setAllowSendInventoryUpdatePacket(true);
         player.playSound(player,Sound.ITEM_ARMOR_EQUIP_IRON,1,1);
         ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
         Connection networkManager = serverPlayer.networkManager;
@@ -180,15 +188,15 @@ public class PlayerHandler {//Todo: fix player skills not loading properly
         sendVisualOnlyWeaponHotbar(playerInventory, weaponItemHandler);
         player.playSound(player,Sound.ITEM_ARMOR_EQUIP_IRON,1,1);
         isWeaponActive = true;
+        setAllowSendInventoryUpdatePacket(false);
         ItemStack item = playerInventory.getItem(0);
         if(item == null || item.getType().equals(Material.AIR)){
             playerInventory.setItem(0,new ItemStack(Material.STRUCTURE_VOID));
         }
     }
 
-    private void sendVisualOnlyWeaponHotbar(PlayerInventory playerInventory, WeaponItemHandler weaponItemHandler) {
-        Inventory inventory = ((CraftInventoryPlayer) playerInventory).getInventory();
-        NMSItemStackAccessor visualWeaponStack = fromItemStack(inventory.getItem(playerInventory.getHeldItemSlot()));
+    public void sendVisualOnlyWeaponHotbar(PlayerInventory playerInventory, WeaponItemHandler weaponItemHandler) {
+        NMSItemStackAccessor visualWeaponStack = fromItemStack(net.minecraft.world.item.ItemStack.fromBukkitCopy(activeWeaponItemStack));
         NMSItemStackAccessor ability = new NMSItemStackAccessor(DyeItem.byColor(DyeColor.BLUE),1);
         NMSItemStackAccessor empty = new NMSItemStackAccessor();
         sendVisualOnlyItemPacket(0,visualWeaponStack);
