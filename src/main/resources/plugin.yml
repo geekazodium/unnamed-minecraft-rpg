@@ -1,5 +1,5 @@
-  name: Caverns-of-Amethyst
-  main: com.geekazodium.cavernsofamethyst.Main
+  name: Unnamed-Minecraft-RPG
+  main: com.geekazodium.unnamedminecraftrpg.Main
   api-version: 1.13
   version: 1.0-SNAPSHOT
   depend:
