@@ -2,7 +2,7 @@ package com.geekazodium.cavernsofamethyst.soundtracks;
 
 import org.bukkit.entity.Player;
 
-public class PlayerMusicHandler {
+public class PlayerMusicHandler {//incomplete
     private SoundTrack soundTrack = new DefaultSoundTrack();
     private SoundTrack newTrack = null;
     private int blendPercent = 0;

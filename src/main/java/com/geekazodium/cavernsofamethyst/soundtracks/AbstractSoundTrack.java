@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class AbstractSoundTrack implements SoundTrack{
+public abstract class AbstractSoundTrack implements SoundTrack{//Need help
     protected Map<Integer, Collection<Note>> notes = new HashMap<>();
     int length = 0;
     int elapsedTicks = 0;

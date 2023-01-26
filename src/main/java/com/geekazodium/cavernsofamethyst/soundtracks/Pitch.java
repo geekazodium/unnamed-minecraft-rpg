@@ -1,6 +1,6 @@
 package com.geekazodium.cavernsofamethyst.soundtracks;
 
-public enum Pitch{
+public enum Pitch{//useless
 
     C_0(0f),
     Cs_0(1f/12f),
