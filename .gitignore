@@ -20,6 +20,7 @@ run/plugins/FastAsyncWorldEdit/history/world/*
 run/plugins/FastAsyncWorldEdit/clipboard/*
 run/world_nether
 run/world_the_end
+run/stats
 
 **1.18.2.jar
 .idea/workspace.xml
