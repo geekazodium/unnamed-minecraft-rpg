@@ -1,4 +1,4 @@
 #Caverns of amethyst
 
-this project is under CLOSED SOURCE LICENSE, any distribution of this code is not allowed without express permission from the owner of the repository.
-currently unfinished.
+I do not have permission to put this under closed source license, dumb mistake, whoops, I'm really sorry, 
+*license has been updated to GPL-3.0*
