@@ -136,48 +136,40 @@ public class EntityDamageUtil {
     }
 
     private static void damageEntity(Entity damager, LivingEntity entity, Random random, PersistentDataContainer container,int baseFire,int baseEarth,int baseWater,int baseNeutral) {
-        float criticalPercent = container.getOrDefault(CRITICAL_RATE,PersistentDataType.FLOAT,0f);
-        boolean critical = criticalPercent*100f > random.nextFloat(0,100);
-        float critDmg = container.getOrDefault(CRITICAL_DAMAGE,PersistentDataType.FLOAT,0f);
-        int fire = defaultDamageRoll(baseFire,critical, critDmg,random);
-        int earth = defaultDamageRoll(baseEarth,critical,critDmg, random);
-        int water = defaultDamageRoll(baseWater,critical,critDmg, random);
-        int neutral = neutralDamageRoll(baseNeutral,critical,critDmg,random);
-        int element = getElement(random, fire, earth, water);
-        int elementCap = getElementalPower((element == FIRE)?fire:((element == EARTH)?earth:water));
-        int entityElement = getElementForEntity(entity,random);
-        int baseAttack = container.getOrDefault(BASE_ATTACK_KEY, PersistentDataType.INTEGER, 0);
-        int effectiveAttack = container.getOrDefault(EFFECTIVE_ATTACK_KEY, PersistentDataType.INTEGER, 0);
-        int maxHealth = container.getOrDefault(MAX_HEALTH_KEY, PersistentDataType.INTEGER, 0);
-        int maxMana = container.getOrDefault(MAX_MANA_KEY, PersistentDataType.INTEGER, 0);
-        if (entityElement != -1) {
-            if (element == FIRE) {
-                if (entityElement == EARTH){
-                    fire += maxMana;
-                }
-                if (entityElement == WATER){
-                    fire += maxHealth;
-                }
-            }else if(element == EARTH){
-                if (entityElement == FIRE){
-                    earth += baseAttack;
-                }
-                if(entityElement == WATER){
-                    earth += maxHealth;
-                }
-            }else if(element == WATER){
-                if(entityElement == FIRE){
-                    water += baseAttack;
-                }
-                if (entityElement == EARTH){
-                    water += maxMana;
-                }
-            }
-        }
-        fire += fire * effectiveAttack/10;
-        earth += earth * effectiveAttack/10;
-        water += water * effectiveAttack/10;
-        neutral += neutral * effectiveAttack/8;
+        DamageInstance damageInstance = new DamageInstance(new int[]{baseNeutral,baseFire,baseEarth,baseWater});// TODO: 1/26/2023 replace haphazard elements system with more interesting one 
+        damageInstance.setCriticalRate(container.getOrDefault(CRITICAL_RATE,PersistentDataType.FLOAT,0f));
+        damageInstance.setCriticalBonus(container.getOrDefault(CRITICAL_DAMAGE,PersistentDataType.FLOAT,0f));
+        damageInstance.applyAttackBonus(container.getOrDefault(EFFECTIVE_ATTACK_KEY, PersistentDataType.INTEGER, 0));
+//        int element = getElement(random, fire, earth, water);
+//        int elementCap = getElementalPower((element == FIRE)?fire:((element == EARTH)?earth:water));
+//        int entityElement = getElementForEntity(entity,random);
+//        int baseAttack = container.getOrDefault(BASE_ATTACK_KEY, PersistentDataType.INTEGER, 0);
+//        int maxHealth = container.getOrDefault(MAX_HEALTH_KEY, PersistentDataType.INTEGER, 0);
+//        int maxMana = container.getOrDefault(MAX_MANA_KEY, PersistentDataType.INTEGER, 0);
+//        if (entityElement != -1) {
+//            if (element == FIRE) {
+//                if (entityElement == EARTH){
+//                    fire += ;
+//                }
+//                if (entityElement == WATER){
+//                    fire += maxHealth;
+//                }
+//            }else if(element == EARTH){
+//                if (entityElement == FIRE){
+//                    earth += baseAttack;
+//                }
+//                if(entityElement == WATER){
+//                    earth += maxHealth;
+//                }
+//            }else if(element == WATER){
+//                if(entityElement == FIRE){
+//                    water += baseAttack;
+//                }
+//                if (entityElement == EARTH){
+//                    water += maxMana;
+//                }
+//            }
+//        }
         /*if(damager instanceof Player player) { code to debug player stats
             debugCharacterStats(player, new String[]{
                     String.valueOf(fire),
@@ -188,11 +180,18 @@ public class EntityDamageUtil {
                     String.valueOf(maxHealth)
             });
         }*/
-        TickingHologram damageHologram = (TickingHologram) Hologram.spawnForDamageEvent(damager, entity,fire,earth,water,neutral,element);
+        damageInstance.rollFinalDamage(random);
+        TickingHologram damageHologram = (TickingHologram) Hologram.spawnForDamageEvent(
+                damager, entity,
+                damageInstance.finalDamage[1],
+                damageInstance.finalDamage[2],
+                damageInstance.finalDamage[3],
+                damageInstance.finalDamage[0],
+                0
+        );
         GameTickHandler.getInstance().overworldDamageAnimationTickHandler.display(damageHologram);
-        applyElement(entity, element, elementCap,50*(critical?2:1));
-        entity.setNoDamageTicks(0);
-        entity.damage(fire+earth+water+neutral);
+        //applyElement(entity, element, elementCap,50*(critical?2:1));
+        damageInstance.apply(entity);
     }
 
     private static int neutralDamageRoll(float damage, boolean critical, float critDmg, Random random) {
@@ -219,19 +218,6 @@ public class EntityDamageUtil {
 
     private static int getElementalPower(int damage) {
         return (int) (Math.sqrt(damage)*100d);
-    }
-
-    private static int defaultDamageRoll(float damage,boolean critical,float criticalBonus,Random random){
-        if(!(damage>0)){
-            return 0;
-        }
-        return (int) (
-                (
-                        damage+
-                        random.nextFloat(1f)*Math.log(damage)+
-                        random.nextFloat(2f)
-                )*(critical?criticalBonus+1:1)
-        );
     }
 
     public static void onEntityDamagePlayer(Entity damager, Player player) {

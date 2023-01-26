@@ -17,11 +17,13 @@ import java.util.Random;
 
 public class ElementalReactionUtil {
 
-    public static final int FIRE = 0;
+    public static final int NEUTRAL = 0;
 
-    public static final int EARTH = 1;
+    public static final int FIRE = 1;
 
-    public static final int WATER = 2;
+    public static final int EARTH = 2;
+
+    public static final int WATER = 3;
     private static final NamespacedKey entityElementsContainer =
             new NamespacedKey(Main.getInstance(),"entity_element_container");
     public static final NamespacedKey FIRE_BASE_DAMAGE =

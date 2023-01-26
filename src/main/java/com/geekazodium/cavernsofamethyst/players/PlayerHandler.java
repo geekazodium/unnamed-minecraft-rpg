@@ -117,7 +117,17 @@ public class PlayerHandler {//Todo: fix player skills not loading properly
                 1,
                 false
         ));
+        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+        Connection networkManager = serverPlayer.networkManager;
+        Inventory inventory = ((CraftInventoryPlayer) player.getInventory()).getInventory();
+        sendInventoryUpdatePacket(networkManager, inventory);
+        sendVisualOnlyWeaponHotbar(player.getInventory(), (WeaponItemHandler) getActiveItemHandler());
     }
+
+    public CustomItemHandler getActiveItemHandler() {
+        return CustomItemHandlerRegistry.get(getActiveItemStack());
+    }
+
     public boolean hasSneaked(){
         if(hasSneaked>0){
             hasSneaked -= 1;

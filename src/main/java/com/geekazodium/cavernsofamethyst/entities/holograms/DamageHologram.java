@@ -12,6 +12,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
+import static com.geekazodium.cavernsofamethyst.util.ElementalReactionUtil.*;
+
 public class DamageHologram extends HologramHandler implements TickingHologram{
     public static final Vector GRAVITY = new Vector(0, 0.1, 0);
     private final @NotNull Location location;
@@ -27,7 +29,7 @@ public class DamageHologram extends HologramHandler implements TickingHologram{
             Component fireDamage = Component.text(fire);
             Style style = fireDamage.style();
             style = style.color(TextColor.color(255, 44, 0));
-            if(damageElement == 0){
+            if(damageElement == FIRE){
                 style = style.decorate(TextDecoration.BOLD);
             }
             fireDamage = fireDamage.style(style);
@@ -41,7 +43,7 @@ public class DamageHologram extends HologramHandler implements TickingHologram{
             Component earthDamage = Component.text(earth);
             Style style = earthDamage.style();
             style = style.color(TextColor.color(0, 255, 27));
-            if(damageElement == 1){
+            if(damageElement == EARTH){
                 style = style.decorate(TextDecoration.BOLD);
             }
             earthDamage = earthDamage.style(style);
@@ -55,7 +57,7 @@ public class DamageHologram extends HologramHandler implements TickingHologram{
             Component waterDamage = Component.text(water);
             Style style = waterDamage.style();
             style = style.color(TextColor.color(0, 106, 255));
-            if(damageElement == 2){
+            if(damageElement == WATER){
                 style = style.decorate(TextDecoration.BOLD);
             }
             waterDamage = waterDamage.style(style);
@@ -69,7 +71,7 @@ public class DamageHologram extends HologramHandler implements TickingHologram{
             Component neutralDamage = Component.text(neutral);
             Style style = neutralDamage.style();
             style = style.color(TextColor.color(156, 166, 169));
-            if(damageElement == 2){
+            if(damageElement == NEUTRAL){
                 style = style.decorate(TextDecoration.BOLD);
             }
             neutralDamage = neutralDamage.style(style);

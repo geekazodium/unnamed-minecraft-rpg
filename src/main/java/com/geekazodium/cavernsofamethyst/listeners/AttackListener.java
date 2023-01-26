@@ -31,8 +31,7 @@ public class AttackListener implements Listener {
     public void onEvent(PlayerArmSwingEvent event){
         Player player = event.getPlayer();
         PlayerHandler playerHandler = GameTickHandler.getPlayerHandler(player);
-        ItemStack activeItemStack = playerHandler.getActiveItemStack();
-        CustomItemHandler itemHandler = CustomItemHandlerRegistry.get(activeItemStack);
+        CustomItemHandler itemHandler = playerHandler.getActiveItemHandler();
         if (itemHandler == null)return;
         if(itemHandler instanceof WeaponItemHandler) deferToWeaponLeftClick(playerHandler,itemHandler,event);
         else {
@@ -56,8 +55,7 @@ public class AttackListener implements Listener {
     public void onEvent(PlayerInteractEvent event){
         PlayerHandler playerHandler = GameTickHandler.getPlayerHandler(event.getPlayer());
         if(playerHandler.checkForDuplicateRightClick(event)) return;
-        ItemStack activeItem = playerHandler.getActiveItemStack();
-        CustomItemHandler itemHandler = CustomItemHandlerRegistry.get(activeItem);
+        CustomItemHandler itemHandler = playerHandler.getActiveItemHandler();
         if(itemHandler==null)return;
         if(!event.getAction().isRightClick())return;
         if(itemHandler instanceof WeaponItemHandler) return;
@@ -100,7 +98,7 @@ public class AttackListener implements Listener {
             if(victim instanceof Player){
                 event.setCancelled(true);
             }
-            if (CustomItemHandlerRegistry.get(GameTickHandler.getPlayerHandler(player).getActiveItemStack()) != null) {
+            if (GameTickHandler.getPlayerHandler(player).getActiveItemHandler() != null) {
                 event.setCancelled(true);
             }
         }else{
