@@ -5,4 +5,4 @@ pluginManagement {
   }
 }
 
-rootProject.name = "caverns-of-amethyst-master"
+rootProject.name = "unnamed-minecraft-rpg-main"

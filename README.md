@@ -1,4 +1,4 @@
-#Caverns of amethyst
+##unnamed minecraft rpg
 
 I do not have permission to put this under closed source license, dumb mistake, whoops, I'm really sorry, 
 *license has been updated to GPL-3.0*
