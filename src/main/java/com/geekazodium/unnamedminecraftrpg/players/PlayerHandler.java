@@ -112,11 +112,15 @@ public class PlayerHandler {//Todo: fix player skills not loading properly
                 1,
                 false
         ));
-        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
-        Connection networkManager = serverPlayer.networkManager;
-        Inventory inventory = ((CraftInventoryPlayer) player.getInventory()).getInventory();
-        sendInventoryUpdatePacket(networkManager, inventory);
-        sendVisualOnlyWeaponHotbar(player.getInventory(), (WeaponItemHandler) getActiveItemHandler());
+        if(isWeaponActive()) {
+            ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+            Connection networkManager = serverPlayer.networkManager;
+            setAllowSendInventoryUpdatePacket(true);
+            Inventory inventory = ((CraftInventoryPlayer) player.getInventory()).getInventory();
+            sendInventoryUpdatePacket(networkManager, inventory);
+            sendVisualOnlyWeaponHotbar(player.getInventory(), (WeaponItemHandler) getActiveItemHandler());
+            setAllowSendInventoryUpdatePacket(false);
+        }
     }
 
     public CustomItemHandler getActiveItemHandler() {
@@ -165,7 +169,7 @@ public class PlayerHandler {//Todo: fix player skills not loading properly
         sendInventoryUpdatePacket(networkManager, inventory);
     }
 
-    private static void sendInventoryUpdatePacket(Connection networkManager, Inventory inventory) {
+    public static void sendInventoryUpdatePacket(Connection networkManager, Inventory inventory) {
         NonNullList<net.minecraft.world.item.ItemStack> inv = NonNullList.create();
         inv.add(EMPTY);inv.add(EMPTY);inv.add(EMPTY);inv.add(EMPTY);inv.add(EMPTY);
         inv.add(inventory.getArmor(3));

@@ -1,4 +1,4 @@
-package com.geekazodium.unnamedminecraftrpg.entities.mobs;
+package com.geekazodium.unnamedminecraftrpg.entities.mobs.pathfinder;
 
 import com.destroystokyo.paper.entity.ai.Goal;
 import com.destroystokyo.paper.entity.ai.GoalKey;

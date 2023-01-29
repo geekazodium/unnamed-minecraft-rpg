@@ -53,14 +53,14 @@ public class Main extends JavaPlugin {
         minecraftServer = getServer();
         overworld = minecraftServer.getWorld(NamespacedKey.minecraft("overworld"));
         LOGGER = getLogger();
-        registerListeners("com.geekazodium.cavernsofamethyst.listeners");
+        registerListeners("com.geekazodium.unnamedminecraftrpg.listeners");
         registerCommandListeners();
         registerProtocolListeners();
         setGameSettings();
-        registerCustomItemHandlers("com.geekazodium.cavernsofamethyst.items");
+        registerCustomItemHandlers("com.geekazodium.unnamedminecraftrpg.items");
         tickHandler = new GameTickHandler();
         minecraftServer.getScheduler().scheduleSyncDelayedTask(this, tickHandler,1);
-        LOGGER.log(Level.INFO,"caverns of amethyst has been successfully loaded");
+        LOGGER.log(Level.INFO,"unnamed minecraft rpg has been successfully loaded");
         //minecraftServer.getScheduler().scheduleSyncDelayedTask(this,,1);
     }
 
