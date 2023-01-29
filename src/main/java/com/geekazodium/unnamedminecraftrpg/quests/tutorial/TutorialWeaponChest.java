@@ -36,6 +36,6 @@ public class TutorialWeaponChest extends LootChestHandler {
                 random
         ).getNewestItem();
         inventory.setItem(13,newestItem);
-        player.openInventory(inventory);
+        openChestInventory(player,inventory);
     }
 }

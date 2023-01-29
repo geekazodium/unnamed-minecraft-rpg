@@ -51,31 +51,6 @@ public class RandomLootChest extends LootChestHandler{
         openChestInventory(player,inventory);
     }
 
-    private void openChestInventory(Player player, Inventory inventory){
-        PlayerHandler handler = GameTickHandler.getPlayerHandler(player);
-        handler.setAllowSendInventoryUpdatePacket(true);
-        PlayerHandler.sendInventoryUpdatePacket(((CraftPlayer) player).getHandle().networkManager, ((CraftInventoryPlayer) player.getInventory()).getInventory());
-        PlayerCloseInventoryListener closeInventoryListener = new PlayerCloseInventoryListener(handler, inventory);
-        Bukkit.getPluginManager().registerEvents(closeInventoryListener,Main.getInstance());
-        player.openInventory(inventory);
-    }
-
-    private record PlayerCloseInventoryListener(PlayerHandler player, Inventory inventory) implements Listener{
-        @EventHandler
-        public void onPlayerDisconnect(PlayerConnectionCloseEvent event){
-            if(event.getPlayerUniqueId()!=player.getPlayer().getUniqueId())return;
-            HandlerList.unregisterAll(this);
-        }
-
-        @EventHandler
-        public void onPlayerCloseInventory(InventoryCloseEvent event){
-            if(event.getPlayer()!=player.getPlayer())return;
-            if(event.getInventory()!=inventory)return;
-            player.sendVisualOnlyWeaponHotbar(player.getPlayer().getInventory(), (WeaponItemHandler) player.getActiveItemHandler());
-            player.setAllowSendInventoryUpdatePacket(false);
-        }
-    }
-
     @Override
     public Location location() {
         return location;

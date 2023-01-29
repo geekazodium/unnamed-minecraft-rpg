@@ -73,11 +73,6 @@ public class WorldTreasureEntityHandler implements Listener {
         PlayerHandler playerHandler = GameTickHandler.getPlayerHandler(player);
         if(playerHandler.isWeaponActive())playerHandler.setAllowSendInventoryUpdatePacket(true);
         treasureEntity.interact(player);
-        if(playerHandler.isWeaponActive()) {
-            WeaponItemHandler handler = (WeaponItemHandler) CustomItemHandlerRegistry.get(playerHandler.getActiveItemStack());
-            playerHandler.sendVisualOnlyWeaponHotbar(player.getInventory(),handler);
-            playerHandler.setAllowSendInventoryUpdatePacket(false);
-        }
     }
     @EventHandler
     public void onLoadChunk(ChunkLoadEvent event){
