@@ -1,5 +1,7 @@
 package com.geekazodium.unnamedminecraftrpg.util;
 
+import com.geekazodium.unnamedminecraftrpg.elementalreactions.Reaction;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.Random;
@@ -8,16 +10,21 @@ public class DamageInstance {
 
     public static final int TOTAL_DAMAGE_TYPES = 4;
     private final int[] damage = new int[TOTAL_DAMAGE_TYPES];
+    private final Entity damager;
     public final int[] finalDamage = new int[TOTAL_DAMAGE_TYPES];
     boolean critical;
     float criticalBonus;
     float criticalRate;
 
-    public DamageInstance(int[] baseDamage){
+    public DamageInstance(int[] baseDamage,Entity damager){
+        this.damager = damager;
         System.arraycopy(baseDamage, 0, damage, 0, Math.min(TOTAL_DAMAGE_TYPES, baseDamage.length));
     }
-    public void apply(LivingEntity entity) {
+    public void apply(LivingEntity entity,Random random) {
         int damage = 0;
+        int element = ElementalReactionUtil.getElementForEntity(entity, random);
+        Reaction reaction = ElementalReactionUtil.getReaction(getDamageInstanceElement(random), element);
+        reaction.createInstance(damager);
         for (int e = 0;e<TOTAL_DAMAGE_TYPES;e++) {
             damage+= this.finalDamage[e];
         }
@@ -65,5 +72,26 @@ public class DamageInstance {
                                 random.nextFloat(2f)
                 )*(critical?criticalBonus+1:1)
         );
+    }
+
+    public int getDamageInstanceElement(Random random){
+        int i = -1;
+        int highestDamage = 0;
+        double duplicates = 1;
+        for(int e = 0;e<TOTAL_DAMAGE_TYPES;e++){
+            if(damage[e]>highestDamage){
+                highestDamage=damage[e];
+                i = e;
+                duplicates = 1;
+            } else if (damage[e] == highestDamage) {
+                duplicates++;
+                if(random.nextFloat()<1f/(float)duplicates){
+                    i = e;
+                }
+            }else{
+                duplicates = 1;
+            }
+        }
+        return i;
     }
 }

@@ -2,9 +2,9 @@
 /shelf/
 /workspace.xml
 
-.idea/*
-gradle/*
-.gradle/*
+.idea/
+gradle**/
+.gradle**/
 run/logs/*
 run/libraries/*
 run/cache/*
@@ -24,4 +24,4 @@ run/world_the_end
 **1.18.2.jar
 .idea/workspace.xml
 
-build/*
+build/

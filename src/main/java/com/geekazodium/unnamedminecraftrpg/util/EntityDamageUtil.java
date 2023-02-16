@@ -136,7 +136,7 @@ public class EntityDamageUtil {
     }
 
     private static void damageEntity(Entity damager, LivingEntity entity, Random random, PersistentDataContainer container,int baseFire,int baseEarth,int baseWater,int baseNeutral) {
-        DamageInstance damageInstance = new DamageInstance(new int[]{baseNeutral,baseFire,baseEarth,baseWater});// TODO: 1/26/2023 replace haphazard elements system with more interesting one 
+        DamageInstance damageInstance = new DamageInstance(new int[]{baseNeutral,baseFire,baseEarth,baseWater},damager);// TODO: 1/26/2023 replace haphazard elements system with more interesting one
         damageInstance.setCriticalRate(container.getOrDefault(CRITICAL_RATE,PersistentDataType.FLOAT,0f));
         damageInstance.setCriticalBonus(container.getOrDefault(CRITICAL_DAMAGE,PersistentDataType.FLOAT,0f));
         damageInstance.applyAttackBonus(container.getOrDefault(EFFECTIVE_ATTACK_KEY, PersistentDataType.INTEGER, 0));
@@ -191,7 +191,7 @@ public class EntityDamageUtil {
         );
         GameTickHandler.getInstance().overworldDamageAnimationTickHandler.display(damageHologram);
         //applyElement(entity, element, elementCap,50*(critical?2:1));
-        damageInstance.apply(entity);
+        damageInstance.apply(entity,random);
     }
 
     private static int neutralDamageRoll(float damage, boolean critical, float critDmg, Random random) {

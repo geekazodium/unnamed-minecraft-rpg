@@ -1,6 +1,8 @@
 package com.geekazodium.unnamedminecraftrpg.util;
 
 import com.geekazodium.unnamedminecraftrpg.Main;
+import com.geekazodium.unnamedminecraftrpg.elementalreactions.Reaction;
+import it.unimi.dsi.fastutil.Pair;
 import org.bukkit.Color;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
@@ -11,9 +13,10 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.Nullable;
+import org.reflections.Reflections;
 
-import java.util.List;
-import java.util.Random;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 public class ElementalReactionUtil {
 
@@ -34,6 +37,25 @@ public class ElementalReactionUtil {
             new NamespacedKey(Main.getInstance(),"water_base_damage");
     public static final NamespacedKey NEUTRAL_BASE_DAMAGE =
             new NamespacedKey(Main.getInstance(),"neutral_base_damage");
+
+    public static Map<Pair<Integer,Integer>, Reaction> reactions = new HashMap<>();
+
+    static{
+        loadReactions();
+    }
+
+    private static void loadReactions(){
+        Reflections reflections = new Reflections("com.geekazodium.unnamedminecraftrpg.elementalreactions");
+        Set<Class<? extends Reaction>> reactions = reflections.getSubTypesOf(Reaction.class);
+        reactions.forEach(aClass -> {
+            try{
+                Reaction reaction = aClass.getDeclaredConstructor().newInstance();
+                ElementalReactionUtil.reactions.put(reaction.getElements(),reaction);
+            } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
+                     IllegalAccessException ignored) {
+            }
+        });
+    }
     public static final int totalElements=3;
 
     public static void tickEntities(List<Entity> entities){
@@ -164,5 +186,10 @@ public class ElementalReactionUtil {
                 );
             }
         }
+    }
+
+
+    public static Reaction getReaction(int damageInstanceElement, int entityElement) {
+        return reactions.get(Pair.of(damageInstanceElement,entityElement));
     }
 }
