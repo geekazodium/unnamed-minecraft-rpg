@@ -24,7 +24,9 @@ public class DamageInstance {
         int damage = 0;
         int element = ElementalReactionUtil.getElementForEntity(entity, random);
         Reaction reaction = ElementalReactionUtil.getReaction(getDamageInstanceElement(random), element);
-        reaction.createInstance(damager);
+        if(reaction != null){
+            reaction.createInstance(damager);
+        }
         for (int e = 0;e<TOTAL_DAMAGE_TYPES;e++) {
             damage+= this.finalDamage[e];
         }

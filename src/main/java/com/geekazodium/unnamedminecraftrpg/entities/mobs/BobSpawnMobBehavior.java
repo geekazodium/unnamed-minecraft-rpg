@@ -23,7 +23,7 @@ import static com.geekazodium.unnamedminecraftrpg.util.ElementalReactionUtil.NEU
 public class BobSpawnMobBehavior extends MobBehavior{
     public BobSpawnMobBehavior(Location center, int entityCap, double spawnRadius) {
         super(center, entityCap, spawnRadius);
-        spawnDelay=1000;
+        spawnDelay=10000;
         spawnTick=1000;
     }
 

@@ -26,6 +26,8 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftInventoryPlayer;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -40,6 +42,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -254,6 +257,13 @@ public class PlayerHandler {//Todo: fix player skills not loading properly
 
     public void tick(){
         player.setFoodLevel(20);
+        @NotNull List<Entity> nearbyEntities = player.getNearbyEntities(32, 32, 32);
+        for (Entity entity :
+                nearbyEntities) {
+            if(entity.getType()!= EntityType.ARROW)continue;
+            player.spawnParticle(Particle.REDSTONE,entity.getLocation(),2,
+                    0.1,0.1,0.1, Particle.REDSTONE.builder().color(Color.LIME).data());
+        }
         updateVolatileStats();
         attackCooldown -= 1;
         attackCooldown = Math.max(0,attackCooldown);
