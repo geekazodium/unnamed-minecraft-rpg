@@ -4,6 +4,7 @@ import com.geekazodium.unnamedminecraftrpg.hitbox.CollisionUtil;
 import com.mojang.math.Quaternion;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -36,10 +37,11 @@ public class TripleShot extends BowItemHandler {
     }
 
     @Override
-    protected void spawnArrow(Player player, Location eyeLocation, Vector direction, PersistentDataContainer container) {
-        super.spawnArrow(player, eyeLocation, direction, container);
+    protected Arrow spawnArrow(Player player, Location eyeLocation, Vector direction, PersistentDataContainer container) {
+        Arrow a = super.spawnArrow(player, eyeLocation, direction, container);
         spawnOffsetArrow(player, eyeLocation, 0.2, container);
         spawnOffsetArrow(player, eyeLocation, -0.2, container);
+        return a;
     }
 
     private void spawnOffsetArrow(Player player, Location eyeLocation,double offset, PersistentDataContainer container) {
